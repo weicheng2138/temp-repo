@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "@/index.css";
 import App from "@/App";
 import "@/queries/axios";
+import "@/i18n";
 
 // Render the app
 const rootElement = document.getElementById("root")!;

@@ -1,8 +1,13 @@
-import { useTheme } from "@/components/theme-provider";
+import { ThemeProviderContext } from "@/components/theme-provider";
+import { use } from "react";
 import { Toaster as Sonner, ToasterProps } from "sonner";
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme();
+  const context = use(ThemeProviderContext);
+  if (!context) {
+    throw new Error("Toaster must be used within a ThemeProvider");
+  }
+  const { theme = "system" } = context;
 
   return (
     <Sonner

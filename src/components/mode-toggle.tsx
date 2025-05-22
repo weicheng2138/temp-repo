@@ -1,5 +1,5 @@
+import { use } from "react";
 import { Moon, Sun } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -7,10 +7,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useTheme } from "@/components/theme-provider";
+import { ThemeProviderContext } from "@/components/theme-provider";
 
 export function ModeToggle() {
-  const { setTheme } = useTheme();
+  const context = use(ThemeProviderContext);
+  if (!context) {
+    throw new Error("ModeToggle must be used within a ThemeProvider");
+  }
+  const { setTheme } = context;
 
   return (
     <DropdownMenu>

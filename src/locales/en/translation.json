@@ -1,0 +1,15 @@
+{
+  "jobs": {
+    "title": "Jobs",
+    "workspace": "Workspace",
+    "master-process": "Master Process"
+  },
+  "monitoring": {
+    "title": "Monitoring",
+    "description": "Monitor the status of your system and applications."
+  },
+  "route": {
+    "jobs": "Jobs",
+    "jobs-detail": "Detail"
+  }
+}

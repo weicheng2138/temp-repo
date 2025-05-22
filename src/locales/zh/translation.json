@@ -1,0 +1,15 @@
+{
+  "jobs": {
+    "title": "任務",
+    "workspace": "公版",
+    "master-process": "主流程"
+  },
+  "monitoring": {
+    "title": "監控",
+    "description": "檢控系統和應用程序的狀態。"
+  },
+  "route": {
+    "jobs": "任務",
+    "jobs-detail": "細節"
+  }
+}

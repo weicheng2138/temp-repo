@@ -11,35 +11,19 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as TestImport } from './routes/test'
-import { Route as FaultImport } from './routes/fault'
-import { Route as AboutImport } from './routes/about'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated/route'
 import { Route as IndexImport } from './routes/index'
-import { Route as PostsIndexImport } from './routes/posts/index'
-import { Route as PostsPostIdImport } from './routes/posts/$postId'
+import { Route as AuthenticatedVirtualTableImport } from './routes/_authenticated/virtual-table'
+import { Route as AuthenticatedRequestUsageImport } from './routes/_authenticated/request-usage'
+import { Route as AuthenticatedModifiedVirtualTableImport } from './routes/_authenticated/modified-virtual-table'
 import { Route as AuthenticatedDashboardImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCalendarImport } from './routes/_authenticated/calendar'
+import { Route as AuthenticatedJobsRouteImport } from './routes/_authenticated/jobs/route'
+import { Route as AuthenticatedFlowsRouteImport } from './routes/_authenticated/flows/route'
+import { Route as AuthenticatedJobsIndexImport } from './routes/_authenticated/jobs/index'
+import { Route as AuthenticatedJobsProcessIdImport } from './routes/_authenticated/jobs/$processId'
 
 // Create/Update Routes
-
-const TestRoute = TestImport.update({
-  id: '/test',
-  path: '/test',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const FaultRoute = FaultImport.update({
-  id: '/fault',
-  path: '/fault',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AboutRoute = AboutImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const AuthenticatedRouteRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
@@ -52,17 +36,24 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const PostsIndexRoute = PostsIndexImport.update({
-  id: '/posts/',
-  path: '/posts/',
-  getParentRoute: () => rootRoute,
+const AuthenticatedVirtualTableRoute = AuthenticatedVirtualTableImport.update({
+  id: '/virtual-table',
+  path: '/virtual-table',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
-const PostsPostIdRoute = PostsPostIdImport.update({
-  id: '/posts/$postId',
-  path: '/posts/$postId',
-  getParentRoute: () => rootRoute,
+const AuthenticatedRequestUsageRoute = AuthenticatedRequestUsageImport.update({
+  id: '/request-usage',
+  path: '/request-usage',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+
+const AuthenticatedModifiedVirtualTableRoute =
+  AuthenticatedModifiedVirtualTableImport.update({
+    id: '/modified-virtual-table',
+    path: '/modified-virtual-table',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 const AuthenticatedDashboardRoute = AuthenticatedDashboardImport.update({
   id: '/dashboard',
@@ -75,6 +66,32 @@ const AuthenticatedCalendarRoute = AuthenticatedCalendarImport.update({
   path: '/calendar',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+
+const AuthenticatedJobsRouteRoute = AuthenticatedJobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+
+const AuthenticatedFlowsRouteRoute = AuthenticatedFlowsRouteImport.update({
+  id: '/flows',
+  path: '/flows',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+
+const AuthenticatedJobsIndexRoute = AuthenticatedJobsIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedJobsRouteRoute,
+} as any)
+
+const AuthenticatedJobsProcessIdRoute = AuthenticatedJobsProcessIdImport.update(
+  {
+    id: '/$processId',
+    path: '/$processId',
+    getParentRoute: () => AuthenticatedJobsRouteRoute,
+  } as any,
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -94,26 +111,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRoute
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
+    '/_authenticated/flows': {
+      id: '/_authenticated/flows'
+      path: '/flows'
+      fullPath: '/flows'
+      preLoaderRoute: typeof AuthenticatedFlowsRouteImport
+      parentRoute: typeof AuthenticatedRouteImport
     }
-    '/fault': {
-      id: '/fault'
-      path: '/fault'
-      fullPath: '/fault'
-      preLoaderRoute: typeof FaultImport
-      parentRoute: typeof rootRoute
-    }
-    '/test': {
-      id: '/test'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof TestImport
-      parentRoute: typeof rootRoute
+    '/_authenticated/jobs': {
+      id: '/_authenticated/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof AuthenticatedJobsRouteImport
+      parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/calendar': {
       id: '/_authenticated/calendar'
@@ -129,33 +139,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardImport
       parentRoute: typeof AuthenticatedRouteImport
     }
-    '/posts/$postId': {
-      id: '/posts/$postId'
-      path: '/posts/$postId'
-      fullPath: '/posts/$postId'
-      preLoaderRoute: typeof PostsPostIdImport
-      parentRoute: typeof rootRoute
+    '/_authenticated/modified-virtual-table': {
+      id: '/_authenticated/modified-virtual-table'
+      path: '/modified-virtual-table'
+      fullPath: '/modified-virtual-table'
+      preLoaderRoute: typeof AuthenticatedModifiedVirtualTableImport
+      parentRoute: typeof AuthenticatedRouteImport
     }
-    '/posts/': {
-      id: '/posts/'
-      path: '/posts'
-      fullPath: '/posts'
-      preLoaderRoute: typeof PostsIndexImport
-      parentRoute: typeof rootRoute
+    '/_authenticated/request-usage': {
+      id: '/_authenticated/request-usage'
+      path: '/request-usage'
+      fullPath: '/request-usage'
+      preLoaderRoute: typeof AuthenticatedRequestUsageImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/virtual-table': {
+      id: '/_authenticated/virtual-table'
+      path: '/virtual-table'
+      fullPath: '/virtual-table'
+      preLoaderRoute: typeof AuthenticatedVirtualTableImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/jobs/$processId': {
+      id: '/_authenticated/jobs/$processId'
+      path: '/$processId'
+      fullPath: '/jobs/$processId'
+      preLoaderRoute: typeof AuthenticatedJobsProcessIdImport
+      parentRoute: typeof AuthenticatedJobsRouteImport
+    }
+    '/_authenticated/jobs/': {
+      id: '/_authenticated/jobs/'
+      path: '/'
+      fullPath: '/jobs/'
+      preLoaderRoute: typeof AuthenticatedJobsIndexImport
+      parentRoute: typeof AuthenticatedJobsRouteImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface AuthenticatedJobsRouteRouteChildren {
+  AuthenticatedJobsProcessIdRoute: typeof AuthenticatedJobsProcessIdRoute
+  AuthenticatedJobsIndexRoute: typeof AuthenticatedJobsIndexRoute
+}
+
+const AuthenticatedJobsRouteRouteChildren: AuthenticatedJobsRouteRouteChildren =
+  {
+    AuthenticatedJobsProcessIdRoute: AuthenticatedJobsProcessIdRoute,
+    AuthenticatedJobsIndexRoute: AuthenticatedJobsIndexRoute,
+  }
+
+const AuthenticatedJobsRouteRouteWithChildren =
+  AuthenticatedJobsRouteRoute._addFileChildren(
+    AuthenticatedJobsRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedFlowsRouteRoute: typeof AuthenticatedFlowsRouteRoute
+  AuthenticatedJobsRouteRoute: typeof AuthenticatedJobsRouteRouteWithChildren
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedModifiedVirtualTableRoute: typeof AuthenticatedModifiedVirtualTableRoute
+  AuthenticatedRequestUsageRoute: typeof AuthenticatedRequestUsageRoute
+  AuthenticatedVirtualTableRoute: typeof AuthenticatedVirtualTableRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedFlowsRouteRoute: AuthenticatedFlowsRouteRoute,
+  AuthenticatedJobsRouteRoute: AuthenticatedJobsRouteRouteWithChildren,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedModifiedVirtualTableRoute:
+    AuthenticatedModifiedVirtualTableRoute,
+  AuthenticatedRequestUsageRoute: AuthenticatedRequestUsageRoute,
+  AuthenticatedVirtualTableRoute: AuthenticatedVirtualTableRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -164,38 +222,43 @@ const AuthenticatedRouteRouteWithChildren =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof AuthenticatedRouteRouteWithChildren
-  '/about': typeof AboutRoute
-  '/fault': typeof FaultRoute
-  '/test': typeof TestRoute
+  '/flows': typeof AuthenticatedFlowsRouteRoute
+  '/jobs': typeof AuthenticatedJobsRouteRouteWithChildren
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/posts/$postId': typeof PostsPostIdRoute
-  '/posts': typeof PostsIndexRoute
+  '/modified-virtual-table': typeof AuthenticatedModifiedVirtualTableRoute
+  '/request-usage': typeof AuthenticatedRequestUsageRoute
+  '/virtual-table': typeof AuthenticatedVirtualTableRoute
+  '/jobs/$processId': typeof AuthenticatedJobsProcessIdRoute
+  '/jobs/': typeof AuthenticatedJobsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof AuthenticatedRouteRouteWithChildren
-  '/about': typeof AboutRoute
-  '/fault': typeof FaultRoute
-  '/test': typeof TestRoute
+  '/flows': typeof AuthenticatedFlowsRouteRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/posts/$postId': typeof PostsPostIdRoute
-  '/posts': typeof PostsIndexRoute
+  '/modified-virtual-table': typeof AuthenticatedModifiedVirtualTableRoute
+  '/request-usage': typeof AuthenticatedRequestUsageRoute
+  '/virtual-table': typeof AuthenticatedVirtualTableRoute
+  '/jobs/$processId': typeof AuthenticatedJobsProcessIdRoute
+  '/jobs': typeof AuthenticatedJobsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/about': typeof AboutRoute
-  '/fault': typeof FaultRoute
-  '/test': typeof TestRoute
+  '/_authenticated/flows': typeof AuthenticatedFlowsRouteRoute
+  '/_authenticated/jobs': typeof AuthenticatedJobsRouteRouteWithChildren
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/posts/$postId': typeof PostsPostIdRoute
-  '/posts/': typeof PostsIndexRoute
+  '/_authenticated/modified-virtual-table': typeof AuthenticatedModifiedVirtualTableRoute
+  '/_authenticated/request-usage': typeof AuthenticatedRequestUsageRoute
+  '/_authenticated/virtual-table': typeof AuthenticatedVirtualTableRoute
+  '/_authenticated/jobs/$processId': typeof AuthenticatedJobsProcessIdRoute
+  '/_authenticated/jobs/': typeof AuthenticatedJobsIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -203,56 +266,51 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | ''
-    | '/about'
-    | '/fault'
-    | '/test'
+    | '/flows'
+    | '/jobs'
     | '/calendar'
     | '/dashboard'
-    | '/posts/$postId'
-    | '/posts'
+    | '/modified-virtual-table'
+    | '/request-usage'
+    | '/virtual-table'
+    | '/jobs/$processId'
+    | '/jobs/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | ''
-    | '/about'
-    | '/fault'
-    | '/test'
+    | '/flows'
     | '/calendar'
     | '/dashboard'
-    | '/posts/$postId'
-    | '/posts'
+    | '/modified-virtual-table'
+    | '/request-usage'
+    | '/virtual-table'
+    | '/jobs/$processId'
+    | '/jobs'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
-    | '/about'
-    | '/fault'
-    | '/test'
+    | '/_authenticated/flows'
+    | '/_authenticated/jobs'
     | '/_authenticated/calendar'
     | '/_authenticated/dashboard'
-    | '/posts/$postId'
-    | '/posts/'
+    | '/_authenticated/modified-virtual-table'
+    | '/_authenticated/request-usage'
+    | '/_authenticated/virtual-table'
+    | '/_authenticated/jobs/$processId'
+    | '/_authenticated/jobs/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AboutRoute: typeof AboutRoute
-  FaultRoute: typeof FaultRoute
-  TestRoute: typeof TestRoute
-  PostsPostIdRoute: typeof PostsPostIdRoute
-  PostsIndexRoute: typeof PostsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AboutRoute: AboutRoute,
-  FaultRoute: FaultRoute,
-  TestRoute: TestRoute,
-  PostsPostIdRoute: PostsPostIdRoute,
-  PostsIndexRoute: PostsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -266,12 +324,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/_authenticated",
-        "/about",
-        "/fault",
-        "/test",
-        "/posts/$postId",
-        "/posts/"
+        "/_authenticated"
       ]
     },
     "/": {
@@ -280,18 +333,26 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated/route.tsx",
       "children": [
+        "/_authenticated/flows",
+        "/_authenticated/jobs",
         "/_authenticated/calendar",
-        "/_authenticated/dashboard"
+        "/_authenticated/dashboard",
+        "/_authenticated/modified-virtual-table",
+        "/_authenticated/request-usage",
+        "/_authenticated/virtual-table"
       ]
     },
-    "/about": {
-      "filePath": "about.tsx"
+    "/_authenticated/flows": {
+      "filePath": "_authenticated/flows/route.tsx",
+      "parent": "/_authenticated"
     },
-    "/fault": {
-      "filePath": "fault.tsx"
-    },
-    "/test": {
-      "filePath": "test.tsx"
+    "/_authenticated/jobs": {
+      "filePath": "_authenticated/jobs/route.tsx",
+      "parent": "/_authenticated",
+      "children": [
+        "/_authenticated/jobs/$processId",
+        "/_authenticated/jobs/"
+      ]
     },
     "/_authenticated/calendar": {
       "filePath": "_authenticated/calendar.tsx",
@@ -301,11 +362,25 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/dashboard.tsx",
       "parent": "/_authenticated"
     },
-    "/posts/$postId": {
-      "filePath": "posts/$postId.tsx"
+    "/_authenticated/modified-virtual-table": {
+      "filePath": "_authenticated/modified-virtual-table.tsx",
+      "parent": "/_authenticated"
     },
-    "/posts/": {
-      "filePath": "posts/index.tsx"
+    "/_authenticated/request-usage": {
+      "filePath": "_authenticated/request-usage.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/virtual-table": {
+      "filePath": "_authenticated/virtual-table.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/jobs/$processId": {
+      "filePath": "_authenticated/jobs/$processId.tsx",
+      "parent": "/_authenticated/jobs"
+    },
+    "/_authenticated/jobs/": {
+      "filePath": "_authenticated/jobs/index.tsx",
+      "parent": "/_authenticated/jobs"
     }
   }
 }

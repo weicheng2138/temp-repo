@@ -1,8 +1,9 @@
-import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { RouterProvider, createRouter, Link } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "@/components/ui/sonner";
 import PageLoader from "@/components/page-loader";
+import PageNotFound from "./components/page-not-found";
 // import { useAuth } from "@/hooks/useAuth";
 import { useAuth } from "@/store/auth";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -20,6 +21,7 @@ const router = createRouter({
   context: { queryClient, authentication: undefined! },
   defaultPendingMinMs: 0,
   defaultPendingMs: 0,
+  defaultNotFoundComponent: PageNotFound,
 });
 
 // Register the router instance for type safety

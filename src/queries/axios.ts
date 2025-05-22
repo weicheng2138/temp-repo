@@ -1,5 +1,6 @@
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { toast } from "sonner";
+import i18n from "@/i18n";
 
 const request = axios.create({
   baseURL: "/api",
@@ -23,20 +24,28 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   function (response) {
     console.log(response);
+    console.log("i18n", i18n.t("monitoring.title"));
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
-    return response.data;
+    return response;
   },
   function (error) {
     console.error(error);
-    console.log("eeeee");
-    toast("Something went Wrong when using axios", {
-      // 中文設定中文
-      action: {
-        label: "Close",
-        onClick: () => console.log("Undo"),
-      },
-    });
+    if (isAxiosError(error)) {
+      toast("Error Axios Error", {
+        action: {
+          label: "Close",
+          onClick: () => console.log("Undo"),
+        },
+      });
+    } else {
+      toast("Badly Wrong", {
+        action: {
+          label: "Close",
+          onClick: () => console.log("Undo"),
+        },
+      });
+    }
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     return Promise.reject(error);
