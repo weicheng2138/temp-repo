@@ -113,7 +113,7 @@ const todo: Todo = {
 };
 
 // Can create a comment
-hasPermission(user, "comments", "create");
+hasPermission(user, "todos", "create");
 
 // Can view the `todo` Todo
 hasPermission(user, "todos", "view", todo);

@@ -12,6 +12,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { workspaceListSchema, masterProcessSchema } from "@/queries/schema";
+import CodeEditor from "@/components/code-editor";
 
 export const Route = createFileRoute("/_authenticated/jobs/")({
   component: RouteComponent,
@@ -39,6 +40,7 @@ function RouteComponent() {
   const { t } = useTranslation();
   const [workspaceId, setWorkspaceId] = useState("");
   const [masterProcessId, setMasterProcessId] = useState("");
+  const [code, setCode] = useState<string | undefined>(undefined);
   const [processOptions, setProcessOptions] = useState<
     { id: number; name: string }[]
   >([]);
@@ -176,6 +178,9 @@ function RouteComponent() {
         {isFetchingProcess && <p>Loading...</p>}
         {!isFetchingProcess && currentProcess && JSON.stringify(currentProcess)}
         {!isFetchingProcess && !currentProcess && "No Master Process"}
+      </section>
+      <section>
+        <CodeEditor code={code} onChange={setCode} />
       </section>
     </div>
   );
