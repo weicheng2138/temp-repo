@@ -1,4 +1,6 @@
-import { z } from "zod";
+import { z } from "zod/v4";
+
+z.config(z.locales.en());
 
 export const todoSchema = z.object({
   userId: z.number(),
@@ -38,7 +40,7 @@ export const processNodeSchema = z.object({
 });
 
 export const masterProcessSchema = z.object({
-  id: z.number().int(),
+  id: z.string(),
   masterName: z.string(),
   processNodes: z.array(processNodeSchema),
 });

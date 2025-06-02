@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Select,
   SelectContent,
@@ -13,6 +13,81 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { workspaceListSchema, masterProcessSchema } from "@/queries/schema";
 import CodeEditor from "@/components/code-editor";
+
+import { BaseNode } from "@/components/nodes/base-node";
+import "@xyflow/react/dist/style.css";
+import {
+  ReactFlow,
+  OnConnect,
+  Position,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  Edge,
+  Node,
+} from "@xyflow/react";
+import {
+  TooltipNode,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/nodes/tooltip-node";
+import { DevTools } from "@/components/devtools";
+
+import { NumNode } from "@/components/nodes/num-node";
+import { SumNode } from "@/components/nodes/sum-node";
+
+import { DataEdge } from "@/components/data-edge";
+
+const nodeTypes = {
+  num: NumNode,
+  sum: SumNode,
+};
+
+const initialNodes: Node[] = [
+  { id: "a", type: "num", data: { value: 0 }, position: { x: 0, y: 0 } },
+  { id: "b", type: "num", data: { value: 0 }, position: { x: 0, y: 200 } },
+  { id: "c", type: "sum", data: { value: 0 }, position: { x: 300, y: 100 } },
+  { id: "d", type: "num", data: { value: 0 }, position: { x: 0, y: 400 } },
+  { id: "e", type: "sum", data: { value: 0 }, position: { x: 600, y: 400 } },
+];
+const edgeTypes = {
+  data: DataEdge,
+};
+
+const initialEdges: Edge[] = [
+  {
+    id: "a->c",
+    type: "data",
+    data: { key: "value" },
+    source: "a",
+    target: "c",
+    targetHandle: "x",
+  },
+  {
+    id: "b->c",
+    type: "data",
+    data: { key: "value" },
+    source: "b",
+    target: "c",
+    targetHandle: "y",
+  },
+  {
+    id: "c->e",
+    type: "data",
+    data: { key: "value" },
+    source: "c",
+    target: "e",
+    targetHandle: "x",
+  },
+  {
+    id: "d->e",
+    type: "data",
+    data: { key: "value" },
+    source: "d",
+    target: "e",
+    targetHandle: "y",
+  },
+];
 
 export const Route = createFileRoute("/_authenticated/jobs/")({
   component: RouteComponent,
@@ -44,6 +119,8 @@ function RouteComponent() {
   const [processOptions, setProcessOptions] = useState<
     { id: number; name: string }[]
   >([]);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const { data: workspacesData } = useQuery({
     queryKey: ["workspaces"],
@@ -133,6 +210,15 @@ function RouteComponent() {
     }
   }, [workspacesData, workspaceId]);
 
+  const onConnect: OnConnect = useCallback(
+    (params) => {
+      setEdges((edges) =>
+        addEdge({ type: "data", data: { key: "value" }, ...params }, edges),
+      );
+    },
+    [setEdges],
+  );
+
   return (
     <div className="flex flex-col gap-2">
       <section className="flex gap-2">
@@ -181,6 +267,23 @@ function RouteComponent() {
       </section>
       <section>
         <CodeEditor code={code} onChange={setCode} />
+        {/* <div className="p-8"> */}
+        {/*   <BaseNode selected={false}>Hi! 👋</BaseNode> */}
+        {/* </div> */}
+        {/* <div className="h-[400px] w-full bg-amber-50 rounded-md"> */}
+        {/*   <ReactFlow */}
+        {/*     nodes={nodes} */}
+        {/*     edges={edges} */}
+        {/*     onNodesChange={onNodesChange} */}
+        {/*     onEdgesChange={onEdgesChange} */}
+        {/*     onConnect={onConnect} */}
+        {/*     nodeTypes={nodeTypes} */}
+        {/*     edgeTypes={edgeTypes} */}
+        {/*     fitView */}
+        {/*   > */}
+        {/*     <DevTools position="top-left" /> */}
+        {/*   </ReactFlow> */}
+        {/* </div> */}
       </section>
     </div>
   );
