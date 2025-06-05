@@ -18,7 +18,10 @@ const queryClient = new QueryClient();
 const router = createRouter({
   routeTree,
   defaultPendingComponent: PageLoader,
-  context: { queryClient, authentication: undefined! },
+  context: {
+    queryClient,
+    authentication: undefined!,
+  },
   defaultPendingMinMs: 0,
   defaultPendingMs: 0,
   defaultNotFoundComponent: PageNotFound,

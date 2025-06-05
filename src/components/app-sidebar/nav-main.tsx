@@ -17,6 +17,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { it } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
 
 export function NavMain({
   items,
@@ -26,15 +27,19 @@ export function NavMain({
     url: string;
     icon?: LucideIcon;
     isActive?: boolean;
+    disabled?: boolean;
     items?: {
       title: string;
       url: string;
     }[];
   }[];
 }) {
+  const { t } = useTranslation();
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Core</SidebarGroupLabel>
+      <SidebarGroupLabel>
+        {t("layout.sidebar.main-menus.core")}
+      </SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
           if (item.items) {
@@ -44,6 +49,7 @@ export function NavMain({
                 asChild
                 defaultOpen={item.isActive}
                 className="group/collapsible"
+                disabled={item.disabled}
               >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
@@ -72,7 +78,12 @@ export function NavMain({
           }
 
           return (
-            <SidebarMenuButton key={item.title} tooltip={item.title} asChild>
+            <SidebarMenuButton
+              key={item.title}
+              tooltip={item.title}
+              asChild
+              disabled={item.disabled}
+            >
               <Link to={item.url}>
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>

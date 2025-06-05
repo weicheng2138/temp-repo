@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LoginForm } from "@/components/login-form";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -11,7 +12,6 @@ export const Route = createFileRoute("/")({
 function Index() {
   // const { isLogin, login, logout, userInfo, setUserInfo, cleanUserInfo } =
   //   useAuth();
-  const { t, i18n } = useTranslation();
   return (
     <>
       <meta
@@ -20,8 +20,9 @@ function Index() {
       />
       <title>Actuarial</title>
       <div className="flex flex-col min-h-svh w-full items-center justify-center p-6 md:p-10">
-        <div className="w-full max-w-sm">{t("monitoring.description")}</div>
-        <Button onClick={() => i18n.changeLanguage("zh")}>change</Button>
+        <Link to="/jobs">
+          <Button variant="link">Go to Jobs</Button>
+        </Link>
       </div>
     </>
   );

@@ -21,91 +21,99 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-
-// This is sample data.
-const data = {
-  user: {
-    name: "laios",
-    email: "laios@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Cafe Life Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-  ],
-  navMain: [
-    {
-      title: "Jobs",
-      url: "/jobs",
-      icon: FileSliders,
-      isActive: false,
-    },
-    {
-      title: "Monitoring",
-      url: "#",
-      icon: Monitor,
-    },
-    {
-      title: "Results",
-      url: "#",
-      icon: TableProperties,
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Request Usage",
-      url: "/request-usage",
-      icon: ArrowRightLeft,
-    },
-    {
-      name: "Virtual Data Table",
-      url: "/virtual-table",
-      icon: FlaskConical,
-    },
-    {
-      name: "Modified Virtual Table",
-      url: "/modified-virtual-table",
-      icon: FlaskConical,
-    },
-  ],
-};
+import { NotificationBadge } from "../notification-badge";
+import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { t } = useTranslation("route");
+  // This is sample data.
+  const data = {
+    user: {
+      name: "laios",
+      email: "laios@example.com",
+      avatar: "/avatars/shadcn.jpg",
+    },
+    teams: [
+      {
+        name: "Cafe Life Inc",
+        logo: GalleryVerticalEnd,
+        plan: "Enterprise",
+      },
+      {
+        name: "Acme Corp.",
+        logo: AudioWaveform,
+        plan: "Startup",
+      },
+    ],
+    navMain: [
+      {
+        title: t("jobs"),
+        url: "/jobs",
+        icon: FileSliders,
+        disabled: false,
+      },
+      {
+        title: t("monitoring"),
+        url: "#",
+        icon: Monitor,
+        disabled: true,
+      },
+      {
+        title: t("result"),
+        url: "#",
+        icon: TableProperties,
+        disabled: true,
+      },
+      {
+        title: "Settings",
+        url: "#",
+        icon: Settings2,
+        disabled: true,
+        items: [
+          {
+            title: "General",
+            url: "#",
+          },
+          {
+            title: "Team",
+            url: "#",
+          },
+          {
+            title: "Billing",
+            url: "#",
+          },
+          {
+            title: "Limits",
+            url: "#",
+          },
+        ],
+      },
+    ],
+    projects: [
+      {
+        name: "Request Usage",
+        url: "/request-usage",
+        icon: ArrowRightLeft,
+      },
+      {
+        name: "Virtual Data Table",
+        url: "/virtual-table",
+        icon: FlaskConical,
+      },
+      {
+        name: "Modified Virtual Table",
+        url: "/modified-virtual-table",
+        icon: FlaskConical,
+      },
+    ],
+  };
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <NavHeader teams={data.teams} />
+        <NotificationBadge label="" variant="destructive">
+          <NavHeader teams={data.teams} />
+        </NotificationBadge>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

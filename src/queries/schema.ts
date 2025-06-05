@@ -44,3 +44,10 @@ export const masterProcessSchema = z.object({
   masterName: z.string(),
   processNodes: z.array(processNodeSchema),
 });
+
+export const searchParamsSchema = z.object({
+  start: z.number().int().default(0),
+  limit: z.number().int().default(5),
+});
+
+export type SearchParams = z.infer<typeof searchParamsSchema>;

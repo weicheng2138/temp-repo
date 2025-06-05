@@ -16,7 +16,7 @@ function PageError({ reset }: ErrorComponentProps) {
   }, [queryErrorResetBoundary]);
 
   return (
-    <div className="flex flex-col gap-6 items-center justify-center h-[calc(100svh-50px)] bg-orange-200">
+    <div className="flex flex-col gap-6 items-center justify-center h-[calc(100svh)] bg-orange-200">
       <div className="relative h-6 w-6">
         <CircleSlash className="absolute text-red-400" />
         <CircleSlash className="absolute animate-ping text-red-400" />

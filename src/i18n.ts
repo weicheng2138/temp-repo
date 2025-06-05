@@ -14,7 +14,7 @@ export const resources = {
   },
   zh: {
     translation: translationZH,
-    reoute: routesZH,
+    route: routesZH,
   },
 } as const;
 

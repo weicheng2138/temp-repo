@@ -23,6 +23,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Link } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 
 export function NavProjects({
   projects,
@@ -34,11 +35,12 @@ export function NavProjects({
   }[];
 }) {
   const { isMobile } = useSidebar();
+  const { t } = useTranslation();
 
   return (
     // <SidebarGroup className="group-data-[collapsible=icon]:hidden">
     <SidebarGroup>
-      <SidebarGroupLabel>Test Functionalities</SidebarGroupLabel>
+      <SidebarGroupLabel>{t("layout.sidebar.main-test")}</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>

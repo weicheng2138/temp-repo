@@ -1,4 +1,9 @@
-import { createFileRoute, redirect, Outlet } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  redirect,
+  Outlet,
+  useRouterState,
+} from "@tanstack/react-router";
 import ErrorPage from "@/components/page-error";
 import { AppSidebar } from "@/components/app-sidebar/app-sidebar";
 import {
@@ -30,45 +35,72 @@ export const Route = createFileRoute("/_authenticated")({
       });
     }
   },
-  loader: async ({ location, params }) => {
-    const rawBreadcrumbs = location.pathname
-      .split("/")
-      .filter((name) => name !== "");
-    const breadcrumbs = rawBreadcrumbs.reduce(
-      (acc, _name, index) => {
-        let localeKey = "" as LocaleRouteType;
-        let path = "" as FileRouteTypes["to"];
-        for (let i = 0; i <= index; i++) {
-          if (i === 0) {
-            localeKey += rawBreadcrumbs[i];
-            path += "/" + rawBreadcrumbs[i];
-            continue;
-          }
-          localeKey += `-${rawBreadcrumbs[i]}`;
-          path += `/${rawBreadcrumbs[i]}`;
-        }
-        acc.push({
-          path,
-          localeKey,
-        });
-        return acc;
-      },
-      [] as {
-        path: FileRouteTypes["to"];
-        localeKey: LocaleRouteType;
-      }[],
-    );
-    return {
-      breadcrumbs,
-    };
-  },
+  // loader: ({ location }) => {
+  //   console.warn("Route loader params", location);
+  //   const rawBreadcrumbs = location.pathname
+  //     .split("/")
+  //     .filter((name) => name !== "");
+  //   const breadcrumbs = rawBreadcrumbs.reduce(
+  //     (acc, _name, index) => {
+  //       let localeKey = "" as LocaleRouteType;
+  //       let path = "" as FileRouteTypes["to"];
+  //       for (let i = 0; i <= index; i++) {
+  //         if (i === 0) {
+  //           localeKey += rawBreadcrumbs[i];
+  //           path += "/" + rawBreadcrumbs[i];
+  //           continue;
+  //         }
+  //         localeKey += `-${rawBreadcrumbs[i]}`;
+  //         path += `/${rawBreadcrumbs[i]}`;
+  //       }
+  //       acc.push({
+  //         path,
+  //         localeKey,
+  //       });
+  //       return acc;
+  //     },
+  //     [] as {
+  //       path: FileRouteTypes["to"];
+  //       localeKey: LocaleRouteType;
+  //     }[],
+  //   );
+  //   return {
+  //     breadcrumbs,
+  //   };
+  // },
   component: RouteLayout,
   errorComponent: ErrorPage,
 });
 
 function RouteLayout() {
   const { t } = useTranslation("route");
-  const { breadcrumbs } = Route.useLoaderData();
+  const matches = useRouterState({
+    select: (s) => s.matches,
+  });
+  const temp = matches.filter((match) => match.fullPath !== "/");
+  // const { breadcrumbs } = Route.useLoaderData();
+  const breadcrumbs = temp.map((el) => {
+    const splitted = el.fullPath.split("/");
+    if (splitted.length === 2) {
+      return {
+        id: el.id,
+        path: el.fullPath as FileRouteTypes["to"],
+        label: t(splitted[1] as LocaleRouteType),
+      };
+    }
+    if (splitted.length === 3 && splitted[2].startsWith("$")) {
+      return {
+        id: el.id,
+        path: null,
+        label: el.id.split("/").pop(),
+      };
+    }
+    return {
+      id: el.id,
+      path: null,
+      label: null,
+    };
+  });
 
   return (
     <SidebarProvider>
@@ -80,34 +112,34 @@ function RouteLayout() {
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink asChild>
-                    <Link to="/">Home</Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
                 {breadcrumbs.map((item, index) => {
-                  if (index !== breadcrumbs.length - 1) {
+                  if (item.path) {
                     return (
-                      <Fragment key={item.path}>
-                        <BreadcrumbSeparator className="hidden md:block" />
+                      <Fragment key={item.id}>
+                        {index !== 0 && (
+                          <BreadcrumbSeparator className="hidden md:block" />
+                        )}
                         <BreadcrumbItem className="hidden md:block">
                           <BreadcrumbLink asChild>
                             <Link
                               to={item.path}
                               // params={{ processId: "123456" }}
                             >
-                              {t(item.localeKey)}
+                              {item.label}
                             </Link>
                           </BreadcrumbLink>
                         </BreadcrumbItem>
                       </Fragment>
                     );
                   }
+                  if (item.label === null) {
+                    return;
+                  }
                   return (
-                    <Fragment key={item.path}>
+                    <Fragment key={item.id}>
                       <BreadcrumbSeparator className="hidden md:block" />
                       <BreadcrumbItem>
-                        <BreadcrumbPage>{t(item.localeKey)}</BreadcrumbPage>
+                        <BreadcrumbPage>{item.label}</BreadcrumbPage>
                       </BreadcrumbItem>
                     </Fragment>
                   );
@@ -117,9 +149,9 @@ function RouteLayout() {
           </div>
         </header>
 
-        <div className="p-4">
+        <main>
           <Outlet />
-        </div>
+        </main>
         {/* <div className="flex flex-1 flex-col gap-4 p-4 pt-0"> */}
         {/*   <div className="grid auto-rows-min gap-4 md:grid-cols-3"> */}
         {/*     <div className="aspect-video rounded-xl bg-muted/50" /> */}

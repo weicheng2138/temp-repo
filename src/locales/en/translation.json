@@ -1,4 +1,20 @@
 {
+  "layout": {
+    "sidebar": {
+      "user-settings": {
+        "account": "Account",
+        "notifications": "Notifications",
+        "languages": "Languages",
+        "language-en": "English",
+        "language-zh": "Chinese",
+        "logout": "Logout"
+      },
+      "main-menus": {
+        "core": "Core"
+      },
+      "main-test": "Test Functionality"
+    }
+  },
   "jobs": {
     "title": "Jobs",
     "workspace": "Workspace",
@@ -7,9 +23,5 @@
   "monitoring": {
     "title": "Monitoring",
     "description": "Monitor the status of your system and applications."
-  },
-  "route": {
-    "jobs": "Jobs",
-    "jobs-detail": "Detail"
   }
 }

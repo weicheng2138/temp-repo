@@ -5,10 +5,5 @@ export const Route = createFileRoute("/_authenticated/jobs")({
 });
 
 function LayoutComponent() {
-  return (
-    <div>
-      <h1>Jobs Layout Scope</h1>
-      <Outlet />
-    </div>
-  );
+  return <Outlet />;
 }

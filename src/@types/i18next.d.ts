@@ -7,6 +7,3 @@ declare module "i18next" {
     resources: (typeof resources)["en"];
   }
 }
-declare type MyNewType = {
-  book: string;
-};

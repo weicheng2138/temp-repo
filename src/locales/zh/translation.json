@@ -1,4 +1,20 @@
 {
+  "layout": {
+    "sidebar": {
+      "user-settings": {
+        "account": "帳號",
+        "notifications": "通知",
+        "languages": "語言設定",
+        "language-en": "英文",
+        "language-zh": "中文",
+        "logout": "登出"
+      },
+      "main-menus": {
+        "core": "核心"
+      },
+      "main-test": "功能測試"
+    }
+  },
   "jobs": {
     "title": "任務",
     "workspace": "公版",
@@ -7,9 +23,5 @@
   "monitoring": {
     "title": "監控",
     "description": "檢控系統和應用程序的狀態。"
-  },
-  "route": {
-    "jobs": "任務",
-    "jobs-detail": "細節"
   }
 }

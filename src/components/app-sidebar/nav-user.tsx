@@ -1,19 +1,14 @@
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
+import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -23,6 +18,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+import { LOCALE } from "@/lib/constants";
 
 export function NavUser({
   user,
@@ -33,7 +32,18 @@ export function NavUser({
     avatar: string;
   };
 }) {
+  const { LOCALE_LIST } = LOCALE;
   const { isMobile } = useSidebar();
+  const { i18n, t } = useTranslation();
+  const [locale, setLocale] = useState<string>(i18n.language);
+  const handleLocaleChange = async (value: string) => {
+    try {
+      await i18n.changeLanguage(value);
+      setLocale(value);
+    } catch (error) {
+      toast.error("Fail to change language");
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -81,17 +91,32 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />
-                Account
+                {t("layout.sidebar.user-settings.account")}
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
-                Notifications
+                {t("layout.sidebar.user-settings.notifications")}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
+
+            <DropdownMenuLabel>
+              {t("layout.sidebar.user-settings.languages")}
+            </DropdownMenuLabel>
+            <DropdownMenuRadioGroup
+              value={locale}
+              onValueChange={handleLocaleChange}
+            >
+              {LOCALE_LIST.map((lang) => (
+                <DropdownMenuRadioItem key={lang.key} value={lang.value}>
+                  {t(lang.localeKey)}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+            <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogOut />
-              Log out
+              {t("layout.sidebar.user-settings.logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

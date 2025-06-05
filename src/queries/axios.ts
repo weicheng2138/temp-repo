@@ -10,7 +10,7 @@ const request = axios.create({
 // Add a request interceptor
 request.interceptors.request.use(
   function (config) {
-    console.log(config);
+    // console.log(config);
     // Do something before request is sent
     return config;
   },
@@ -23,8 +23,8 @@ request.interceptors.request.use(
 // Add a response interceptor
 request.interceptors.response.use(
   function (response) {
-    console.log(response);
-    console.log("i18n", i18n.t("monitoring.title"));
+    // console.log(response);
+    console.log("make sure axios can get i18n > ", i18n.t("monitoring.title"));
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     return response;
