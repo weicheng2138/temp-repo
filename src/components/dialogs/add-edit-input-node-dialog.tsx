@@ -1,18 +1,9 @@
-import { useForm } from "react-hook-form";
 import { format, addMinutes, set } from "date-fns";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { ReactNode, useMemo } from "react";
 import { Node } from "@xyflow/react";
 import { toast } from "sonner";
+import { useForm, useStore } from "@tanstack/react-form";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -25,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import {
   Dialog,
+  DialogOverlay,
   DialogClose,
   DialogContent,
   DialogTrigger,
@@ -36,15 +28,42 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useDisclosure } from "@/hooks/use-disclosure";
+import { z } from "zod";
+import { Label } from "../ui/label";
 
+const inputNodeSchema = z.object({
+  version: z.string().min(1),
+  // productNames: z.array(z.string().min(1)).min(1),
+});
 type Props = {
   children: ReactNode;
-  inputNode: Node;
+  inputNode?: Node;
 };
 
-export function AddEditEventDialog({ children, inputNode }: Props) {
+export function AddEditInputNodeDialog({ children, inputNode }: Props) {
   const { isOpen, onClose, onToggle } = useDisclosure();
-  const isEditing = !!event;
+  const isEditing = !!inputNode;
+
+  const form = useForm({
+    defaultValues: {
+      version: "",
+      // productNames: [] as string[],
+    },
+    validators: {
+      onChange: inputNodeSchema,
+    },
+    onSubmit: async ({ value }) => {
+      // Do something with form data
+      console.log(value);
+      onClose();
+    },
+  });
+  const version = useStore(form.store, (state) => state.values.version);
+
+  const handleOpenChanged = () => {
+    form.reset();
+    onToggle();
+  };
 
   // const getInitialDates = () => {
   //   if (!startDate)
@@ -109,27 +128,80 @@ export function AddEditEventDialog({ children, inputNode }: Props) {
   // };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onToggle} modal={false}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChanged}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{isEditing ? "編輯事件" : "新增事件"}</DialogTitle>
+          <DialogTitle>
+            {isEditing ? "Edit Input Node" : "Add Input Node"}
+          </DialogTitle>
           <DialogDescription>
             {isEditing
-              ? "Modify your existing event."
-              : "Create a new event for your calendar."}
+              ? "Modify your existing input node -> " + inputNode.data["value"]
+              : "Create a new input node."}
           </DialogDescription>
         </DialogHeader>
+
+        <form
+          id="input-node-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <div>
+            <form.Field
+              name="version"
+              children={(field) => {
+                return (
+                  <>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={(value) => field.handleChange(value)}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder={"Version"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>{"version"}</SelectLabel>
+                          {["20240612", "20250103"].map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </>
+                );
+              }}
+            />
+          </div>
+        </form>
 
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="outline">
-              取消
+              Cancel
             </Button>
           </DialogClose>
-          <Button form="event-form" type="submit">
-            {isEditing ? "儲存變更" : "建立事件"}
-          </Button>
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+            children={([canSubmit, isSubmitting]) => (
+              <>
+                <Button
+                  type="submit"
+                  form="input-node-form"
+                  disabled={!canSubmit}
+                  // onClick={() => form.handleSubmit()}
+                >
+                  {isEditing ? "儲存變更" : "建立"}
+                </Button>
+              </>
+            )}
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>

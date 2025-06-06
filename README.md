@@ -1,53 +1,23 @@
-# React Calendar
+# React Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This template provides a consistency setup to get React working in Vite with HMR and some ESLint rules.
 
-## Expanding the ESLint configuration
+## Getting Start
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```shell
+pnpm install
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+pnpm dev
+
+pnpm build
+
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Stacks
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    "react-x": reactX,
-    "react-dom": reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs["recommended-typescript"].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-});
-```
-
-## Tankstack Router
-
-- A loader that is longer than 1 second will show a loading component. Loading component will be shown only when the loader is longer than 1 second.
+- [x] [tanstack](https://tanstack.com/) (Router, Query, Form and Table)
+- [x] [shadcn](https://ui.shadcn.com/) (UI Library)
+- [x] [tailwindcss](https://tailwindcss.com/) (CSS Framework)
+- [x] [xyflow](https://xyflow.com/) (Flow Component and also support shadcn import)
+- [x] [zustand](https://zustand-demo.pmnd.rs/) (State Management)
+- [x] [zod](https://zod.dev/) (Data Type Schema Validator)

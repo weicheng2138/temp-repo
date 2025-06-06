@@ -37,6 +37,8 @@ import { NumNode } from "@/components/nodes/num-node";
 import { SumNode } from "@/components/nodes/sum-node";
 
 import { DataEdge } from "@/components/data-edge";
+import { AddEditInputNodeDialog } from "@/components/dialogs/add-edit-input-node-dialog";
+import { Button } from "@/components/ui/button";
 
 const nodeTypes = {
   num: NumNode,
@@ -44,11 +46,11 @@ const nodeTypes = {
 };
 
 const initialNodes: Node[] = [
-  { id: "a", type: "num", data: { value: 0 }, position: { x: 0, y: 0 } },
-  { id: "b", type: "num", data: { value: 0 }, position: { x: 0, y: 200 } },
-  { id: "c", type: "sum", data: { value: 0 }, position: { x: 300, y: 100 } },
-  { id: "d", type: "num", data: { value: 0 }, position: { x: 0, y: 400 } },
-  { id: "e", type: "sum", data: { value: 0 }, position: { x: 600, y: 400 } },
+  { id: "a", type: "num", data: { value: 1 }, position: { x: 0, y: 0 } },
+  { id: "b", type: "num", data: { value: 2 }, position: { x: 0, y: 200 } },
+  { id: "c", type: "sum", data: { value: 3 }, position: { x: 300, y: 100 } },
+  { id: "d", type: "num", data: { value: 4 }, position: { x: 0, y: 400 } },
+  { id: "e", type: "sum", data: { value: 5 }, position: { x: 600, y: 400 } },
 ];
 const edgeTypes = {
   data: DataEdge,
@@ -266,7 +268,10 @@ function RouteComponent() {
         {!isFetchingProcess && !currentProcess && "No Master Process"}
       </section>
       <section>
-        <CodeEditor code={code} onChange={setCode} />
+        {/* <CodeEditor code={code} onChange={setCode} /> */}
+        <AddEditInputNodeDialog inputNode={initialNodes[0]}>
+          <Button>OPEN</Button>
+        </AddEditInputNodeDialog>
         {/* <div className="p-8"> */}
         {/*   <BaseNode selected={false}>Hi! 👋</BaseNode> */}
         {/* </div> */}
