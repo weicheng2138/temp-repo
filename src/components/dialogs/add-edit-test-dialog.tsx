@@ -1,4 +1,3 @@
-import { format, addMinutes, set } from "date-fns";
 import { ReactNode, useId, useMemo, useState } from "react";
 import { Node } from "@xyflow/react";
 import { toast } from "sonner";
@@ -43,7 +42,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { version } from "react-dom";
-import { Switch } from "@/components/ui/switch";
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
   const zodErrors = field.state.meta.errors as ZodError[];
@@ -68,17 +66,13 @@ const productNamesOptions: Option[] = [
   },
   { label: "PRCT_244", value: "PRCT_244" },
   { label: "PRCT_245", value: "PRCT_245" },
-  { label: "PRCT_245-1", value: "PRCT_245-1" },
-  { label: "PRCT_246", value: "PRCT_246" },
-  { label: "PRCT_247", value: "PRCT_247" },
-  { label: "PRCT_248", value: "PRCT_248" },
-  { label: "PRCT_249", value: "PRCT_249" },
-  { label: "PRCT_250", value: "PRCT_250" },
 ];
 const initialVersion = ["20240612", "20250103", "20250505"];
 
 const inputNodeSchema = z.object({
-  name: z.string().min(1),
+  version: z.string().min(1, "At least pick one"),
+  age: z.number().int().positive(),
+  name: z.string(),
   inputProperties: z
     .array(
       z.object({
@@ -98,17 +92,18 @@ type Props = {
   inputNode?: Node;
 };
 
-export function AddEditInputNodeDialog({ children, inputNode }: Props) {
+export function AddEditTestDialog({ children, inputNode }: Props) {
   const { isOpen, onClose, onToggle } = useDisclosure();
   const isEditing = !!inputNode;
   const formId = useId();
-  const [isSelectAll, setIsSelectAll] = useState(false);
   const [currentVersion, setCurrentVersion] = useState("");
   const [currentProductNames, setCurrentProductNames] = useState<Option[]>([]);
 
   const form = useForm({
     defaultValues: {
-      name: inputNode ? (inputNode.data["label"] as string) : "",
+      version: "",
+      age: NaN,
+      name: "",
       inputProperties: [] as {
         version: string;
         productNames: Option[];
@@ -123,6 +118,7 @@ export function AddEditInputNodeDialog({ children, inputNode }: Props) {
       onClose();
     },
   });
+  const version = useStore(form.store, (state) => state.values.version);
   const inputProperties = useStore(
     form.store,
     (state) => state.values.inputProperties,
@@ -147,24 +143,6 @@ export function AddEditInputNodeDialog({ children, inputNode }: Props) {
     onToggle();
   };
 
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setIsSelectAll(checked);
-      setCurrentProductNames([]);
-      return;
-    }
-    setIsSelectAll(false);
-  };
-
-  const canAdd = useMemo(() => {
-    if (currentVersion === "") {
-      return false;
-    }
-    if (isSelectAll) {
-      return true;
-    }
-    return currentProductNames.length > 0;
-  }, [isSelectAll, currentVersion, currentProductNames]);
   // const getInitialDates = () => {
   //   if (!startDate)
   //     return { startDate: new Date(), endDate: addMinutes(new Date(), 30) };
@@ -252,6 +230,76 @@ export function AddEditInputNodeDialog({ children, inputNode }: Props) {
         >
           <div className="grid grid-cols-2 gap-1">
             <form.Field
+              name="version"
+              children={(field) => {
+                return (
+                  <div className="flex flex-col">
+                    <Label className="pb-1" htmlFor={field.name}>
+                      Version
+                      {requiredFields.includes(field.name) && (
+                        <span className="text-destructive">*</span>
+                      )}
+                    </Label>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={(value) => field.handleChange(value)}
+                    >
+                      <SelectTrigger
+                        className="w-full"
+                        id={field.name}
+                        isValid={
+                          !field.state.meta.isTouched ||
+                          field.state.meta.isValid
+                        }
+                      >
+                        <SelectValue placeholder={"Version"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>{"version"}</SelectLabel>
+                          {versionOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FieldInfo field={field} />
+                  </div>
+                );
+              }}
+            />
+            <form.Field
+              name="age"
+              children={(field) => {
+                return (
+                  <div className="flex flex-col">
+                    <Label className="pb-1" htmlFor={field.name}>
+                      Age
+                      {requiredFields.includes(field.name) && (
+                        <span className="text-destructive">*</span>
+                      )}
+                    </Label>
+                    <Input
+                      id={field.name}
+                      isValid={
+                        !field.state.meta.isTouched || field.state.meta.isValid
+                      }
+                      type="number"
+                      placeholder="Age"
+                      value={isNaN(field.state.value) ? "" : field.state.value}
+                      onChange={(e) =>
+                        field.handleChange(Number(e.target.value))
+                      }
+                    />
+                    <FieldInfo field={field} />
+                  </div>
+                );
+              }}
+            />
+
+            <form.Field
               name="name"
               children={(field) => {
                 return (
@@ -281,17 +329,14 @@ export function AddEditInputNodeDialog({ children, inputNode }: Props) {
               name="inputProperties"
               children={(field) => {
                 return (
-                  <div className="flex flex-col col-span-2 gap-1">
-                    <Label className="pb-1" htmlFor={field.name}>
-                      Version & Product Names
-                      {requiredFields.includes(field.name) && (
-                        <span className="text-destructive">*</span>
-                      )}
-                    </Label>
-                    <section className="flex gap-1">
+                  <>
+                    <section className="flex gap-1 col-span-2">
                       <Button
                         variant="secondary"
-                        disabled={!canAdd}
+                        disabled={
+                          currentVersion === "" ||
+                          currentProductNames.length === 0
+                        }
                         onClick={() => {
                           field.pushValue({
                             version: currentVersion,
@@ -299,7 +344,6 @@ export function AddEditInputNodeDialog({ children, inputNode }: Props) {
                           });
                           setCurrentProductNames([]);
                           setCurrentVersion("");
-                          setIsSelectAll(false);
                         }}
                       >
                         <ListPlus />
@@ -325,14 +369,14 @@ export function AddEditInputNodeDialog({ children, inputNode }: Props) {
                       </Select>
 
                       <MultipleSelector
-                        disabled={isSelectAll}
+                        className="w-full"
                         value={currentProductNames}
                         onChange={(options) => setCurrentProductNames(options)}
                         commandProps={{
-                          label: "Select Product Names",
+                          label: "Select frameworks",
                         }}
                         defaultOptions={productNamesOptions}
-                        placeholder="Select Product Names"
+                        placeholder="Select frameworks"
                         emptyIndicator={
                           <p className="text-center text-sm">
                             No results found
@@ -341,24 +385,8 @@ export function AddEditInputNodeDialog({ children, inputNode }: Props) {
                       />
                     </section>
 
-                    <div className="flex flex-row items-center justify-between rounded-lg border p-3 gap-2">
-                      <div className="space-y-0.5">
-                        <Label className="pb-1" htmlFor="select-all-switch">
-                          Select All Products
-                        </Label>
-                        <p className="text-muted-foreground text-sm">
-                          You will select all products in this version for this
-                          master process
-                        </p>
-                      </div>
-                      <Switch
-                        id="select-all-switch"
-                        checked={isSelectAll}
-                        onCheckedChange={(checked) => handleSelectAll(checked)}
-                      />
-                    </div>
                     <ScrollArea
-                      className="h-40 w-full rounded-md border"
+                      className="h-40 w-full rounded-md border col-span-2"
                       isValid={
                         !field.state.meta.isTouched || field.state.meta.isValid
                       }
@@ -408,7 +436,7 @@ export function AddEditInputNodeDialog({ children, inputNode }: Props) {
                       </Table>
                     </ScrollArea>
                     <FieldInfo field={field} />
-                  </div>
+                  </>
                 );
               }}
             />

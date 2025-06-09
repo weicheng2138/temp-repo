@@ -6,12 +6,17 @@ import { cn } from "@/lib/utils";
 function ScrollArea({
   className,
   children,
+  isValid = true,
   ...props
-}: React.ComponentProps<typeof ScrollAreaPrimitive.Root>) {
+}: React.ComponentProps<typeof ScrollAreaPrimitive.Root> & {
+  isValid?: boolean;
+}) {
   return (
     <ScrollAreaPrimitive.Root
       data-slot="scroll-area"
-      className={cn("relative", className)}
+      className={cn("relative", className, {
+        "border-red-400": !isValid,
+      })}
       {...props}
     >
       <ScrollAreaPrimitive.Viewport

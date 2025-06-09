@@ -38,6 +38,7 @@ import { SumNode } from "@/components/nodes/sum-node";
 
 import { DataEdge } from "@/components/data-edge";
 import { AddEditInputNodeDialog } from "@/components/dialogs/add-edit-input-node-dialog";
+import { AddEditTestDialog } from "@/components/dialogs/add-edit-test-dialog";
 import { Button } from "@/components/ui/button";
 
 const nodeTypes = {
@@ -46,11 +47,36 @@ const nodeTypes = {
 };
 
 const initialNodes: Node[] = [
-  { id: "a", type: "num", data: { value: 1 }, position: { x: 0, y: 0 } },
-  { id: "b", type: "num", data: { value: 2 }, position: { x: 0, y: 200 } },
-  { id: "c", type: "sum", data: { value: 3 }, position: { x: 300, y: 100 } },
-  { id: "d", type: "num", data: { value: 4 }, position: { x: 0, y: 400 } },
-  { id: "e", type: "sum", data: { value: 5 }, position: { x: 600, y: 400 } },
+  {
+    id: "a",
+    type: "num",
+    data: { value: 1, label: "one" },
+    position: { x: 0, y: 0 },
+  },
+  {
+    id: "b",
+    type: "num",
+    data: { value: 2, label: "two" },
+    position: { x: 0, y: 200 },
+  },
+  {
+    id: "c",
+    type: "sum",
+    data: { value: 3, label: "three" },
+    position: { x: 300, y: 100 },
+  },
+  {
+    id: "d",
+    type: "num",
+    data: { value: 4, label: "four" },
+    position: { x: 0, y: 400 },
+  },
+  {
+    id: "e",
+    type: "sum",
+    data: { value: 5, label: "five" },
+    position: { x: 600, y: 400 },
+  },
 ];
 const edgeTypes = {
   data: DataEdge,
@@ -272,6 +298,10 @@ function RouteComponent() {
         <AddEditInputNodeDialog inputNode={initialNodes[0]}>
           <Button>OPEN</Button>
         </AddEditInputNodeDialog>
+
+        <AddEditTestDialog inputNode={initialNodes[0]}>
+          <Button>TEST DIALOG</Button>
+        </AddEditTestDialog>
         {/* <div className="p-8"> */}
         {/*   <BaseNode selected={false}>Hi! 👋</BaseNode> */}
         {/* </div> */}
