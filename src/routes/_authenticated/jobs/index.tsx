@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import {
   Select,
   SelectContent,
@@ -25,6 +25,11 @@ import {
   addEdge,
   Edge,
   Node,
+  ReactFlowProvider,
+  NodeProps,
+  getIncomers,
+  getOutgoers,
+  getConnectedEdges,
 } from "@xyflow/react";
 import {
   TooltipNode,
@@ -44,6 +49,16 @@ import { Button } from "@/components/ui/button";
 const nodeTypes = {
   num: NumNode,
   sum: SumNode,
+  tooltip: memo(({ selected }: NodeProps) => {
+    return (
+      <TooltipNode selected={selected}>
+        <TooltipContent position={Position.Right}>
+          Hidden Content
+        </TooltipContent>
+        <TooltipTrigger>Hover</TooltipTrigger>
+      </TooltipNode>
+    );
+  }),
 };
 
 const initialNodes: Node[] = [
@@ -57,64 +72,67 @@ const initialNodes: Node[] = [
     id: "b",
     type: "num",
     data: { value: 2, label: "two" },
-    position: { x: 0, y: 200 },
+    position: { x: 300, y: 0 },
   },
-  {
-    id: "c",
-    type: "sum",
-    data: { value: 3, label: "three" },
-    position: { x: 300, y: 100 },
-  },
-  {
-    id: "d",
-    type: "num",
-    data: { value: 4, label: "four" },
-    position: { x: 0, y: 400 },
-  },
-  {
-    id: "e",
-    type: "sum",
-    data: { value: 5, label: "five" },
-    position: { x: 600, y: 400 },
-  },
+  // {
+  //   id: "c",
+  //   type: "sum",
+  //   data: { value: 3, label: "three" },
+  //   position: { x: 300, y: 100 },
+  // },
+  // {
+  //   id: "d",
+  //   type: "num",
+  //   data: { value: 4, label: "four" },
+  //   position: { x: 0, y: 400 },
+  // },
+  // {
+  //   id: "e",
+  //   type: "sum",
+  //   data: { value: 5, label: "five" },
+  //   position: { x: 600, y: 400 },
+  // },
 ];
-const edgeTypes = {
-  data: DataEdge,
-};
 
 const initialEdges: Edge[] = [
   {
-    id: "a->c",
-    type: "data",
-    data: { key: "value" },
+    id: "a->b",
     source: "a",
-    target: "c",
-    targetHandle: "x",
+    target: "b",
+    sourceHandle: "id-top",
   },
-  {
-    id: "b->c",
-    type: "data",
-    data: { key: "value" },
-    source: "b",
-    target: "c",
-    targetHandle: "y",
-  },
-  {
-    id: "c->e",
-    type: "data",
-    data: { key: "value" },
-    source: "c",
-    target: "e",
-    targetHandle: "x",
-  },
-  {
-    id: "d->e",
-    type: "data",
-    data: { key: "value" },
-    source: "d",
-    target: "e",
-    targetHandle: "y",
-  },
+  // {
+  //   id: "a->c",
+  //   type: "data",
+  //   data: { key: "value" },
+  //   source: "a",
+  //   target: "c",
+  //   targetHandle: "x",
+  // },
+  // {
+  //   id: "b->c",
+  //   type: "data",
+  //   data: { key: "value" },
+  //   source: "b",
+  //   target: "c",
+  //   targetHandle: "y",
+  // },
+  // {
+  //   id: "c->e",
+  //   type: "data",
+  //   data: { key: "value" },
+  //   source: "c",
+  //   target: "e",
+  //   targetHandle: "x",
+  // },
+  // {
+  //   id: "d->e",
+  //   type: "data",
+  //   data: { key: "value" },
+  //   source: "d",
+  //   target: "e",
+  //   targetHandle: "y",
+  // },
 ];
 
 export const Route = createFileRoute("/_authenticated/jobs/")({
@@ -295,30 +313,42 @@ function RouteComponent() {
       </section>
       <section>
         {/* <CodeEditor code={code} onChange={setCode} /> */}
-        <AddEditInputNodeDialog inputNode={initialNodes[0]}>
-          <Button>OPEN</Button>
-        </AddEditInputNodeDialog>
 
-        <AddEditTestDialog inputNode={initialNodes[0]}>
-          <Button>TEST DIALOG</Button>
-        </AddEditTestDialog>
-        {/* <div className="p-8"> */}
-        {/*   <BaseNode selected={false}>Hi! 👋</BaseNode> */}
+        {/* <AddEditInputNodeDialog inputNode={initialNodes[0]}> */}
+        {/*   <Button>OPEN</Button> */}
+        {/* </AddEditInputNodeDialog> */}
+        {/* <AddEditTestDialog inputNode={initialNodes[0]}> */}
+        {/*   <Button>TEST DIALOG</Button> */}
+        {/* </AddEditTestDialog> */}
+
+        {/* <div className="p-8 h-[400px] w-full"> */}
+        {/* <BaseNode selected={false}>Hi! 👋</BaseNode> */}
+        {/* <ReactFlow */}
+        {/*   defaultNodes={[ */}
+        {/*     { */}
+        {/*       id: "1", */}
+        {/*       position: { x: 200, y: 200 }, */}
+        {/*       data: {}, */}
+        {/*       type: "tooltip", */}
+        {/*     }, */}
+        {/*   ]} */}
+        {/*   nodeTypes={nodeTypes} */}
+        {/*   fitView */}
+        {/* /> */}
         {/* </div> */}
-        {/* <div className="h-[400px] w-full bg-amber-50 rounded-md"> */}
-        {/*   <ReactFlow */}
-        {/*     nodes={nodes} */}
-        {/*     edges={edges} */}
-        {/*     onNodesChange={onNodesChange} */}
-        {/*     onEdgesChange={onEdgesChange} */}
-        {/*     onConnect={onConnect} */}
-        {/*     nodeTypes={nodeTypes} */}
-        {/*     edgeTypes={edgeTypes} */}
-        {/*     fitView */}
-        {/*   > */}
-        {/*     <DevTools position="top-left" /> */}
-        {/*   </ReactFlow> */}
-        {/* </div> */}
+        <div className="h-[400px] w-full bg-amber-50 rounded-md">
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            nodeTypes={nodeTypes}
+            fitView
+          >
+            <DevTools position="top-left" />
+          </ReactFlow>
+        </div>
       </section>
     </div>
   );

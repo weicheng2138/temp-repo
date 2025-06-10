@@ -1,12 +1,6 @@
-import {
-  forwardRef,
-  useCallback,
-  HTMLAttributes,
-  ReactNode,
-  ComponentProps,
-} from "react";
+import { useCallback, ReactNode, ComponentProps } from "react";
 import { useNodeId, useReactFlow } from "@xyflow/react";
-import { EllipsisVertical, Trash } from "lucide-react";
+import { EllipsisVertical, Pencil, Trash } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Slot } from "@radix-ui/react-slot";
@@ -19,34 +13,31 @@ import {
 
 /* NODE HEADER -------------------------------------------------------------- */
 
-export type NodeHeaderProps = HTMLAttributes<HTMLElement>;
+export type NodeHeaderProps = ComponentProps<"header">;
 
 /**
  * A container for a consistent header layout intended to be used inside the
  * `<BaseNode />` component.
  */
-export const NodeHeader = forwardRef<HTMLElement, NodeHeaderProps>(
-  ({ className, ...props }, ref) => {
-    return (
-      <header
-        ref={ref}
-        {...props}
-        className={cn(
-          "flex items-center justify-between gap-2 px-3 py-2",
-          // Remove or modify these classes if you modify the padding in the
-          // `<BaseNode />` component.
-          className,
-        )}
-      />
-    );
-  },
-);
+export const NodeHeader = ({ className, ...props }: NodeHeaderProps) => {
+  return (
+    <header
+      {...props}
+      className={cn(
+        "flex items-center justify-between gap-2 border-b-1 py-1 px-3",
+        // Remove or modify these classes if you modify the padding in the
+        // `<BaseNode />` component.
+        className,
+      )}
+    />
+  );
+};
 
 NodeHeader.displayName = "NodeHeader";
 
 /* NODE HEADER TITLE -------------------------------------------------------- */
 
-export type NodeHeaderTitleProps = HTMLAttributes<HTMLHeadingElement> & {
+export type NodeHeaderTitleProps = ComponentProps<"h3"> & {
   asChild?: boolean;
 };
 
@@ -54,51 +45,52 @@ export type NodeHeaderTitleProps = HTMLAttributes<HTMLHeadingElement> & {
  * The title text for the node. To maintain a native application feel, the title
  * text is not selectable.
  */
-export const NodeHeaderTitle = forwardRef<
-  HTMLHeadingElement,
-  NodeHeaderTitleProps
->(({ className, asChild, ...props }, ref) => {
+export const NodeHeaderTitle = ({
+  className,
+  asChild,
+  ...props
+}: NodeHeaderTitleProps) => {
   const Comp = asChild ? Slot : "h3";
 
   return (
     <Comp
-      ref={ref}
       {...props}
-      className={cn(className, "user-select-none flex-1 font-semibold")}
+      className={cn(
+        className,
+        "user-select-none flex-1 font-normal w-30 truncate",
+      )}
     />
   );
-});
+};
 
 NodeHeaderTitle.displayName = "NodeHeaderTitle";
 
 /* NODE HEADER ICON --------------------------------------------------------- */
 
-export type NodeHeaderIconProps = HTMLAttributes<HTMLSpanElement>;
+export type NodeHeaderIconProps = ComponentProps<"span">;
 
-export const NodeHeaderIcon = forwardRef<HTMLSpanElement, NodeHeaderIconProps>(
-  ({ className, ...props }, ref) => {
-    return (
-      <span ref={ref} {...props} className={cn(className, "[&>*]:size-5")} />
-    );
-  },
-);
+export const NodeHeaderIcon = ({
+  className,
+  ...props
+}: NodeHeaderIconProps) => {
+  return <span {...props} className={cn(className, "[&>*]:size-5")} />;
+};
 
 NodeHeaderIcon.displayName = "NodeHeaderIcon";
 
 /* NODE HEADER ACTIONS ------------------------------------------------------ */
 
-export type NodeHeaderActionsProps = HTMLAttributes<HTMLDivElement>;
+export type NodeHeaderActionsProps = ComponentProps<"div">;
 
 /**
  * A container for right-aligned action buttons in the node header.
  */
-export const NodeHeaderActions = forwardRef<
-  HTMLDivElement,
-  NodeHeaderActionsProps
->(({ className, ...props }, ref) => {
+export const NodeHeaderActions = ({
+  className,
+  ...props
+}: NodeHeaderActionsProps) => {
   return (
     <div
-      ref={ref}
       {...props}
       className={cn(
         "ml-auto flex items-center gap-1 justify-self-end",
@@ -106,7 +98,7 @@ export const NodeHeaderActions = forwardRef<
       )}
     />
   );
-});
+};
 
 NodeHeaderActions.displayName = "NodeHeaderActions";
 
@@ -124,13 +116,14 @@ export type NodeHeaderActionProps = ButtonProps & {
  * important to provide a meaningful and accessible `label` prop that describes
  * the action.
  */
-export const NodeHeaderAction = forwardRef<
-  HTMLButtonElement,
-  NodeHeaderActionProps
->(({ className, label, title, ...props }, ref) => {
+export const NodeHeaderAction = ({
+  className,
+  label,
+  title,
+  ...props
+}: NodeHeaderActionProps) => {
   return (
     <Button
-      ref={ref}
       variant="ghost"
       aria-label={label}
       title={title ?? label}
@@ -138,7 +131,7 @@ export const NodeHeaderAction = forwardRef<
       {...props}
     />
   );
-});
+};
 
 NodeHeaderAction.displayName = "NodeHeaderAction";
 
@@ -161,21 +154,22 @@ export type NodeHeaderMenuActionProps = Omit<
  * here: https://ui.shadcn.com/docs/components/dropdown-menu
  *
  */
-export const NodeHeaderMenuAction = forwardRef<
-  HTMLButtonElement,
-  NodeHeaderMenuActionProps
->(({ trigger, children, ...props }, ref) => {
+export const NodeHeaderMenuAction = ({
+  trigger,
+  children,
+  ...props
+}: NodeHeaderMenuActionProps) => {
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <NodeHeaderAction ref={ref} {...props}>
+        <NodeHeaderAction {...props}>
           {trigger ?? <EllipsisVertical />}
         </NodeHeaderAction>
       </DropdownMenuTrigger>
       <DropdownMenuContent>{children}</DropdownMenuContent>
     </DropdownMenu>
   );
-});
+};
 
 NodeHeaderMenuAction.displayName = "NodeHeaderMenuAction";
 
@@ -187,11 +181,32 @@ export const NodeHeaderDeleteAction = () => {
 
   const handleClick = useCallback(() => {
     setNodes((prevNodes) => prevNodes.filter((node) => node.id !== id));
+    // setTimeout(() => {
+    // }, 0);
   }, [id, setNodes]);
 
   return (
     <NodeHeaderAction onClick={handleClick} variant="ghost" label="Delete node">
       <Trash />
+    </NodeHeaderAction>
+  );
+};
+
+NodeHeaderDeleteAction.displayName = "NodeHeaderDeleteAction";
+
+/* NODE HEADER EDIT ACTION --------------------------------------- */
+
+export const NodeHeaderEditAction = () => {
+  const id = useNodeId();
+  const { setNodes } = useReactFlow();
+
+  const handleClick = useCallback(() => {
+    console.log(id);
+  }, [id, setNodes]);
+
+  return (
+    <NodeHeaderAction variant="ghost" label="Edit node">
+      <Pencil />
     </NodeHeaderAction>
   );
 };

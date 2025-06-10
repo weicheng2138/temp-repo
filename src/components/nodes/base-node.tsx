@@ -1,22 +1,22 @@
-import { forwardRef, HTMLAttributes } from "react";
+import { ComponentProps } from "react";
 
 import { cn } from "@/lib/utils";
 
-export const BaseNode = forwardRef<
-  HTMLDivElement,
-  HTMLAttributes<HTMLDivElement> & { selected?: boolean }
->(({ className, selected, ...props }, ref) => (
+export const BaseNode = ({
+  className,
+  selected,
+  ...props
+}: ComponentProps<"div"> & { selected?: boolean }) => (
   <div
-    ref={ref}
     className={cn(
-      "rounded-md border bg-card p-5 text-card-foreground font-mono font-bold",
+      "rounded-md border bg-card text-card-foreground font-mono font-bold",
       className,
       selected ? "border-muted-foreground shadow-lg" : "",
-      "hover:ring-1",
+      "hover:ring-muted-foreground hover:ring-2",
     )}
     tabIndex={0}
     {...props}
   />
-));
+);
 
 BaseNode.displayName = "BaseNode";

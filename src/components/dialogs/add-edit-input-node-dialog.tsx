@@ -1,6 +1,6 @@
 import { format, addMinutes, set } from "date-fns";
 import { ReactNode, useId, useMemo, useState } from "react";
-import { Node } from "@xyflow/react";
+import { Node, useNodeId, useReactFlow } from "@xyflow/react";
 import { toast } from "sonner";
 import { AnyFieldApi, useForm, useStore } from "@tanstack/react-form";
 import MultipleSelector, { Option } from "@/components/ui/multiselect";
@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/table";
 import { version } from "react-dom";
 import { Switch } from "@/components/ui/switch";
+import { DropdownMenu } from "@/components/ui/dropdown-menu";
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
   const zodErrors = field.state.meta.errors as ZodError[];
@@ -93,18 +94,31 @@ const inputNodeSchema = z.object({
     )
     .min(1),
 });
+
 type Props = {
-  children: ReactNode;
+  children?: ReactNode;
   inputNode?: Node;
+  dropdownNode?: ReactNode;
 };
 
-export function AddEditInputNodeDialog({ children, inputNode }: Props) {
+export function AddEditInputNodeDialog({
+  children,
+  inputNode,
+  dropdownNode,
+}: Props) {
+  const trigger = dropdownNode || children;
+  if (!trigger) {
+    throw "[add-edit-input-node-dialog]: There is no trigger component pass in";
+  }
+
   const { isOpen, onClose, onToggle } = useDisclosure();
   const isEditing = !!inputNode;
   const formId = useId();
   const [isSelectAll, setIsSelectAll] = useState(false);
   const [currentVersion, setCurrentVersion] = useState("");
   const [currentProductNames, setCurrentProductNames] = useState<Option[]>([]);
+  const id = useNodeId();
+  const { updateNode } = useReactFlow();
 
   const form = useForm({
     defaultValues: {
@@ -120,6 +134,19 @@ export function AddEditInputNodeDialog({ children, inputNode }: Props) {
     onSubmit: async ({ value }) => {
       // Do something with form data
       console.log(value);
+      console.log("nodeId", id);
+      if (id) {
+        updateNode(id, (node) => {
+          console.log(node);
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              label: value.name,
+            },
+          };
+        });
+      }
       onClose();
     },
   });
@@ -165,6 +192,7 @@ export function AddEditInputNodeDialog({ children, inputNode }: Props) {
     }
     return currentProductNames.length > 0;
   }, [isSelectAll, currentVersion, currentProductNames]);
+
   // const getInitialDates = () => {
   //   if (!startDate)
   //     return { startDate: new Date(), endDate: addMinutes(new Date(), 30) };
@@ -229,7 +257,11 @@ export function AddEditInputNodeDialog({ children, inputNode }: Props) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChanged}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      {dropdownNode ? (
+        dropdownNode
+      ) : (
+        <DialogTrigger asChild>{children}</DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>
@@ -325,7 +357,7 @@ export function AddEditInputNodeDialog({ children, inputNode }: Props) {
                       </Select>
 
                       <MultipleSelector
-                        disabled={isSelectAll}
+                        disabled={isSelectAll || currentVersion === ""}
                         value={currentProductNames}
                         onChange={(options) => setCurrentProductNames(options)}
                         commandProps={{
