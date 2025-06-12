@@ -4,6 +4,14 @@ import { Node, useNodeId, useReactFlow } from "@xyflow/react";
 import { toast } from "sonner";
 import { AnyFieldApi, useForm, useStore } from "@tanstack/react-form";
 import MultipleSelector, { Option } from "@/components/ui/multiselect";
+import {
+  MultiSelector,
+  MultiSelectorContent,
+  MultiSelectorInput,
+  MultiSelectorItem,
+  MultiSelectorList,
+  MultiSelectorTrigger,
+} from "@/components/ui/multi-temp";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -62,20 +70,41 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
   );
 }
 
-const productNamesOptions: Option[] = [
-  {
-    label: "PRCT_243",
-    value: "PRCT_243",
-  },
-  { label: "PRCT_244", value: "PRCT_244" },
-  { label: "PRCT_245", value: "PRCT_245" },
-  { label: "PRCT_245-1", value: "PRCT_245-1" },
-  { label: "PRCT_246", value: "PRCT_246" },
-  { label: "PRCT_247", value: "PRCT_247" },
-  { label: "PRCT_248", value: "PRCT_248" },
-  { label: "PRCT_249", value: "PRCT_249" },
-  { label: "PRCT_250", value: "PRCT_250" },
-];
+const productNamesOptions: Option[] = Array(2000)
+  .fill(0)
+  .map((_, index) => {
+    if (index % 3 === 0) {
+      return {
+        label: "PRCT_TTO_" + index,
+        value: "PRCT_TTO_" + index,
+      };
+    }
+    if (index % 3 === 1) {
+      return {
+        label: "PRCT_KKE_" + index,
+        value: "PRCT_KKE_" + index,
+      };
+    }
+    return {
+      label: "PRCT_CCL_" + index,
+      value: "PRCT_CCL_" + index,
+    };
+  });
+console.log(productNamesOptions);
+// const productNamesOptions: Option[] = [
+//   {
+//     label: "PRCT_243",
+//     value: "PRCT_243",
+//   },
+//   { label: "PRCT_244", value: "PRCT_244" },
+//   { label: "PRCT_245", value: "PRCT_245" },
+//   { label: "PRCT_245-1", value: "PRCT_245-1" },
+//   { label: "PRCT_246", value: "PRCT_246" },
+//   { label: "PRCT_247", value: "PRCT_247" },
+//   { label: "PRCT_248", value: "PRCT_248" },
+//   { label: "PRCT_249", value: "PRCT_249" },
+//   { label: "PRCT_250", value: "PRCT_250" },
+// ];
 const initialVersion = ["20240612", "20250103", "20250505"];
 
 const inputNodeSchema = z.object({
@@ -169,7 +198,7 @@ export function AddEditInputNodeDialog({
     );
   }, [inputProperties]);
 
-  const handleOpenChanged = () => {
+  const handleOpenChanged = (open: boolean) => {
     form.reset();
     onToggle();
   };
@@ -262,7 +291,7 @@ export function AddEditInputNodeDialog({
       ) : (
         <DialogTrigger asChild>{children}</DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "Edit Input Node" : "Add Input Node"}
@@ -320,7 +349,7 @@ export function AddEditInputNodeDialog({
                         <span className="text-destructive">*</span>
                       )}
                     </Label>
-                    <section className="flex gap-1">
+                    <section className="flex gap-1 items-center">
                       <Button
                         variant="secondary"
                         disabled={!canAdd}
@@ -363,7 +392,7 @@ export function AddEditInputNodeDialog({
                         commandProps={{
                           label: "Select Product Names",
                         }}
-                        defaultOptions={productNamesOptions}
+                        options={productNamesOptions}
                         placeholder="Select Product Names"
                         emptyIndicator={
                           <p className="text-center text-sm">
@@ -371,13 +400,35 @@ export function AddEditInputNodeDialog({
                           </p>
                         }
                       />
+                      {/* <MultiSelector */}
+                      {/*   values={currentProductNames} */}
+                      {/*   onValuesChange={setCurrentProductNames} */}
+                      {/*   className="w-full" */}
+                      {/* > */}
+                      {/*   <MultiSelectorTrigger> */}
+                      {/*     <MultiSelectorInput placeholder="Select your framework" /> */}
+                      {/*   </MultiSelectorTrigger> */}
+                      {/*   <MultiSelectorContent> */}
+                      {/*     <MultiSelectorList> */}
+                      {/*       {productNamesOptions.map((option) => ( */}
+                      {/*         <MultiSelectorItem */}
+                      {/*           key={option.value} */}
+                      {/*           value={option.value} */}
+                      {/*         > */}
+                      {/*           {option.label} */}
+                      {/*         </MultiSelectorItem> */}
+                      {/*       ))} */}
+                      {/*     </MultiSelectorList> */}
+                      {/*   </MultiSelectorContent> */}
+                      {/* </MultiSelector> */}
                     </section>
 
-                    <div className="flex flex-row items-center justify-between rounded-lg border p-3 gap-2">
-                      <div className="space-y-0.5">
-                        <Label className="pb-1" htmlFor="select-all-switch">
-                          Select All Products
-                        </Label>
+                    <Label
+                      htmlFor="select-all-switch"
+                      className="flex flex-row items-center justify-between rounded-lg border p-3 gap-2 hover:cursor-pointer hover:border-ring"
+                    >
+                      <div className="flex flex-col gap-1">
+                        <span>Select All Products</span>
                         <p className="text-muted-foreground text-sm">
                           You will select all products in this version for this
                           master process
@@ -388,7 +439,7 @@ export function AddEditInputNodeDialog({
                         checked={isSelectAll}
                         onCheckedChange={(checked) => handleSelectAll(checked)}
                       />
-                    </div>
+                    </Label>
                     <ScrollArea
                       className="h-40 w-full rounded-md border"
                       isValid={
@@ -420,9 +471,11 @@ export function AddEditInputNodeDialog({
                                 </TableCell>
                                 <TableCell>{el.version}</TableCell>
                                 <TableCell>
-                                  {el.productNames
-                                    .map((option) => option.value)
-                                    .join(", ")}
+                                  {el.productNames.length > 0
+                                    ? el.productNames
+                                        .map((option) => option.value)
+                                        .join(", ")
+                                    : "ALL"}
                                 </TableCell>
                               </TableRow>
                             );

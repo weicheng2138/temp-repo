@@ -14,7 +14,7 @@ import {
 export interface Option {
   value: string;
   label: string;
-  disable?: boolean;
+  disabled?: boolean;
   /** fixed option that can't be removed. */
   fixed?: boolean;
   /** Group the options by providing key. */
@@ -123,14 +123,20 @@ function transToGroupOption(options: Option[], groupBy?: string) {
   return groupOption;
 }
 
-function removePickedOption(groupOption: GroupOption, picked: Option[]) {
+function disablePickedOption(groupOption: GroupOption, picked: Option[]) {
   const cloneOption = JSON.parse(JSON.stringify(groupOption)) as GroupOption;
 
   for (const [key, value] of Object.entries(cloneOption)) {
-    cloneOption[key] = value.filter(
-      (val) => !picked.find((p) => p.value === val.value),
-    );
+    cloneOption[key] = value.map((val) => ({
+      ...val,
+      disabled: picked.some((p) => p.value === val.value),
+    }));
   }
+  // for (const [key, value] of Object.entries(cloneOption)) {
+  //   cloneOption[key] = value.filter(
+  //     (val) => !picked.find((p) => p.value === val.value),
+  //   );
+  // }
   return cloneOption;
 }
 
@@ -218,6 +224,17 @@ const MultipleSelector = ({
   const handleUnselect = React.useCallback(
     (option: Option) => {
       const newOptions = selected.filter((s) => s.value !== option.value);
+      setSelected(newOptions);
+      onChange?.(newOptions);
+    },
+    [onChange, selected],
+  );
+
+  const handleUnselects = React.useCallback(
+    (options: Option[]) => {
+      const newOptions = selected.filter(
+        (s) => !options.some((option) => option.value === s.value),
+      );
       setSelected(newOptions);
       onChange?.(newOptions);
     },
@@ -389,7 +406,7 @@ const MultipleSelector = ({
   }, [creatable, emptyIndicator, onSearch, options]);
 
   const selectables = React.useMemo<GroupOption>(
-    () => removePickedOption(options, selected),
+    () => disablePickedOption(options, selected),
     [options, selected],
   );
 
@@ -443,37 +460,71 @@ const MultipleSelector = ({
         }}
       >
         <div className="flex flex-wrap gap-1">
-          {selected.map((option) => {
+          {(() => {
+            const displayItems =
+              selected.length > 3 ? selected.slice(0, 2) : selected;
+            const showMore = selected.length > 3;
+
             return (
-              <div
-                key={option.value}
-                className={cn(
-                  "animate-fadeIn bg-background text-secondary-foreground hover:bg-background relative inline-flex h-7 cursor-default items-center rounded-md border ps-2 pe-7 pl-2 text-xs font-medium transition-all disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 data-fixed:pe-2",
-                  badgeClassName,
+              <>
+                {displayItems.map((option) => (
+                  <div
+                    key={option.value}
+                    className={cn(
+                      "animate-fadeIn bg-background text-secondary-foreground hover:bg-background relative inline-flex h-7 cursor-default items-center rounded-md border ps-2 pe-7 pl-2 text-xs font-medium transition-all disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 data-fixed:pe-2",
+                      badgeClassName,
+                    )}
+                    data-fixed={option.fixed}
+                    data-disabled={disabled || undefined}
+                  >
+                    {option.label}
+                    <button
+                      className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute -inset-y-px -end-px flex size-7 items-center justify-center rounded-e-md border border-transparent p-0 outline-hidden transition-[color,box-shadow] outline-none focus-visible:ring-[3px]"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleUnselect(option);
+                        }
+                      }}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onClick={() => handleUnselect(option)}
+                      aria-label="Remove"
+                    >
+                      <XIcon size={14} aria-hidden="true" />
+                    </button>
+                  </div>
+                ))}
+                {showMore && (
+                  <div
+                    className={cn(
+                      "animate-fadeIn bg-background text-secondary-foreground hover:bg-background relative inline-flex h-7 cursor-default items-center rounded-md border ps-2 pe-7 pl-2 text-xs font-medium transition-all disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
+                      badgeClassName,
+                    )}
+                  >
+                    + {selected.length - 2} more
+                    <button
+                      className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute -inset-y-px -end-px flex size-7 items-center justify-center rounded-e-md border border-transparent p-0 outline-hidden transition-[color,box-shadow] outline-none focus-visible:ring-[3px]"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onClick={() => {
+                        // Delete all remaining items (from index 2 onwards)
+                        const remainingItems = selected.slice(2);
+                        console.log(remainingItems);
+                        handleUnselects(remainingItems);
+                      }}
+                      aria-label="Remove all remaining items"
+                    >
+                      <XIcon size={14} aria-hidden="true" />
+                    </button>
+                  </div>
                 )}
-                data-fixed={option.fixed}
-                data-disabled={disabled || undefined}
-              >
-                {option.label}
-                <button
-                  className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute -inset-y-px -end-px flex size-7 items-center justify-center rounded-e-md border border-transparent p-0 outline-hidden transition-[color,box-shadow] outline-none focus-visible:ring-[3px]"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleUnselect(option);
-                    }
-                  }}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  onClick={() => handleUnselect(option)}
-                  aria-label="Remove"
-                >
-                  <XIcon size={14} aria-hidden="true" />
-                </button>
-              </div>
+              </>
             );
-          })}
+          })()}
           {/* Avoid having the "Search" Icon */}
           <CommandPrimitive.Input
             {...inputProps}
@@ -575,7 +626,7 @@ const MultipleSelector = ({
                             <CommandItem
                               key={option.value}
                               value={option.value}
-                              disabled={option.disable}
+                              disabled={option.disabled}
                               onMouseDown={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
