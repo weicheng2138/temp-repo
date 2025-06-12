@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Command as CommandPrimitive, useCommandState } from "cmdk";
 import { XIcon } from "lucide-react";
 
@@ -10,6 +10,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { useVirtualizer } from "@tanstack/react-virtual";
 
 export interface Option {
   value: string;
@@ -79,6 +80,8 @@ interface MultipleSelectorProps {
   >;
   /** hide the clear all button. */
   hideClearAllButton?: boolean;
+  /** Enable virtualizer for masive data. */
+  isVirtualized?: boolean;
 }
 
 export interface MultipleSelectorRef {
@@ -132,6 +135,8 @@ function disablePickedOption(groupOption: GroupOption, picked: Option[]) {
       disabled: picked.some((p) => p.value === val.value),
     }));
   }
+
+  /** Remove the selected option */
   // for (const [key, value] of Object.entries(cloneOption)) {
   //   cloneOption[key] = value.filter(
   //     (val) => !picked.find((p) => p.value === val.value),
@@ -195,6 +200,7 @@ const MultipleSelector = ({
   commandProps,
   inputProps,
   hideClearAllButton = false,
+  isVirtualized = false,
 }: MultipleSelectorProps) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
@@ -208,6 +214,28 @@ const MultipleSelector = ({
   );
   const [inputValue, setInputValue] = React.useState("");
   const debouncedSearchTerm = useDebounce(inputValue, delay || 500);
+
+  // Row Virtualizer from tanstack
+  const virtualizedOptions = useMemo(() => {
+    if (!options || !options[""]) {
+      return [];
+    }
+    const updatedOptions = disablePickedOption(options, selected);
+    if (inputValue === "") {
+      return updatedOptions[""];
+    }
+    return updatedOptions[""].filter((option) =>
+      option.label.includes(inputValue),
+    );
+  }, [inputValue, options, selected]);
+  const parentRef = React.useRef(null);
+  const rowVirtualizer = useVirtualizer({
+    count: virtualizedOptions.length,
+    // count: arrayOptions ? arrayOptions.length : 0,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 32,
+    overscan: 5,
+  });
 
   const handleClickOutside = (event: MouseEvent | TouchEvent) => {
     if (
@@ -513,7 +541,6 @@ const MultipleSelector = ({
                       onClick={() => {
                         // Delete all remaining items (from index 2 onwards)
                         const remainingItems = selected.slice(2);
-                        console.log(remainingItems);
                         handleUnselects(remainingItems);
                       }}
                       aria-label="Remove all remaining items"
@@ -594,7 +621,8 @@ const MultipleSelector = ({
         >
           {open && (
             <CommandList
-              className="bg-popover text-popover-foreground shadow-lg outline-hidden"
+              ref={parentRef}
+              className="bg-popover text-popover-foreground shadow-lg outline-hidden h-60"
               onMouseLeave={() => {
                 setOnScrollbar(false);
               }}
@@ -614,46 +642,101 @@ const MultipleSelector = ({
                   {!selectFirstItem && (
                     <CommandItem value="-" className="hidden" />
                   )}
-                  {Object.entries(selectables).map(([key, dropdowns]) => (
+
+                  {!isVirtualized &&
+                    Object.entries(selectables).map(([key, dropdowns]) => (
+                      <CommandGroup
+                        key={key}
+                        heading={key}
+                        className="h-full overflow-auto"
+                      >
+                        <>
+                          {dropdowns.map((option, index) => {
+                            return (
+                              <CommandItem
+                                key={option.value}
+                                value={option.value}
+                                disabled={option.disabled}
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                }}
+                                onSelect={() => {
+                                  if (selected.length >= maxSelected) {
+                                    onMaxSelected?.(selected.length);
+                                    return;
+                                  }
+                                  setInputValue("");
+                                  const newOptions = [...selected, option];
+                                  setSelected(newOptions);
+                                  onChange?.(newOptions);
+                                }}
+                                className={cn(
+                                  "cursor-pointer",
+                                  option.disable &&
+                                    "pointer-events-none cursor-not-allowed opacity-50",
+                                )}
+                              >
+                                {option.label}
+                              </CommandItem>
+                            );
+                          })}
+                        </>
+                      </CommandGroup>
+                    ))}
+
+                  {isVirtualized && (
                     <CommandGroup
-                      key={key}
-                      heading={key}
+                      key={""}
+                      heading={""}
                       className="h-full overflow-auto"
                     >
-                      <>
-                        {dropdowns.map((option) => {
-                          return (
-                            <CommandItem
-                              key={option.value}
-                              value={option.value}
-                              disabled={option.disabled}
-                              onMouseDown={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                              }}
-                              onSelect={() => {
-                                if (selected.length >= maxSelected) {
-                                  onMaxSelected?.(selected.length);
-                                  return;
-                                }
-                                setInputValue("");
-                                const newOptions = [...selected, option];
-                                setSelected(newOptions);
-                                onChange?.(newOptions);
-                              }}
-                              className={cn(
-                                "cursor-pointer",
-                                option.disable &&
-                                  "pointer-events-none cursor-not-allowed opacity-50",
-                              )}
-                            >
-                              {option.label}
-                            </CommandItem>
-                          );
-                        })}
-                      </>
+                      <div
+                        className="w-full relative"
+                        style={{
+                          height: `${rowVirtualizer.getTotalSize()}px`,
+                        }}
+                      >
+                        {rowVirtualizer.getVirtualItems().map((virtualRow) => (
+                          <CommandItem
+                            key={virtualRow.index}
+                            value={virtualizedOptions[virtualRow.index].value}
+                            disabled={
+                              virtualizedOptions[virtualRow.index].disabled
+                            }
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                            onSelect={() => {
+                              if (selected.length >= maxSelected) {
+                                onMaxSelected?.(selected.length);
+                                return;
+                              }
+                              setInputValue("");
+                              const newOptions = [
+                                ...selected,
+                                virtualizedOptions[virtualRow.index],
+                              ];
+                              setSelected(newOptions);
+                              onChange?.(newOptions);
+                            }}
+                            className={cn(
+                              "absolute top-0 left-0 w-full h-9",
+                              "cursor-pointer",
+                              virtualizedOptions[virtualRow.index].disabled &&
+                                "pointer-events-none cursor-not-allowed opacity-50",
+                            )}
+                            style={{
+                              transform: `translateY(${virtualRow.start}px)`,
+                            }}
+                          >
+                            {virtualizedOptions[virtualRow.index].label}
+                          </CommandItem>
+                        ))}
+                      </div>
                     </CommandGroup>
-                  ))}
+                  )}
                 </>
               )}
             </CommandList>

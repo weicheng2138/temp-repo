@@ -4,14 +4,6 @@ import { Node, useNodeId, useReactFlow } from "@xyflow/react";
 import { toast } from "sonner";
 import { AnyFieldApi, useForm, useStore } from "@tanstack/react-form";
 import MultipleSelector, { Option } from "@/components/ui/multiselect";
-import {
-  MultiSelector,
-  MultiSelectorContent,
-  MultiSelectorInput,
-  MultiSelectorItem,
-  MultiSelectorList,
-  MultiSelectorTrigger,
-} from "@/components/ui/multi-temp";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -90,21 +82,6 @@ const productNamesOptions: Option[] = Array(2000)
       value: "PRCT_CCL_" + index,
     };
   });
-console.log(productNamesOptions);
-// const productNamesOptions: Option[] = [
-//   {
-//     label: "PRCT_243",
-//     value: "PRCT_243",
-//   },
-//   { label: "PRCT_244", value: "PRCT_244" },
-//   { label: "PRCT_245", value: "PRCT_245" },
-//   { label: "PRCT_245-1", value: "PRCT_245-1" },
-//   { label: "PRCT_246", value: "PRCT_246" },
-//   { label: "PRCT_247", value: "PRCT_247" },
-//   { label: "PRCT_248", value: "PRCT_248" },
-//   { label: "PRCT_249", value: "PRCT_249" },
-//   { label: "PRCT_250", value: "PRCT_250" },
-// ];
 const initialVersion = ["20240612", "20250103", "20250505"];
 
 const inputNodeSchema = z.object({
@@ -387,6 +364,7 @@ export function AddEditInputNodeDialog({
 
                       <MultipleSelector
                         disabled={isSelectAll || currentVersion === ""}
+                        isVirtualized
                         value={currentProductNames}
                         onChange={(options) => setCurrentProductNames(options)}
                         commandProps={{
@@ -400,27 +378,6 @@ export function AddEditInputNodeDialog({
                           </p>
                         }
                       />
-                      {/* <MultiSelector */}
-                      {/*   values={currentProductNames} */}
-                      {/*   onValuesChange={setCurrentProductNames} */}
-                      {/*   className="w-full" */}
-                      {/* > */}
-                      {/*   <MultiSelectorTrigger> */}
-                      {/*     <MultiSelectorInput placeholder="Select your framework" /> */}
-                      {/*   </MultiSelectorTrigger> */}
-                      {/*   <MultiSelectorContent> */}
-                      {/*     <MultiSelectorList> */}
-                      {/*       {productNamesOptions.map((option) => ( */}
-                      {/*         <MultiSelectorItem */}
-                      {/*           key={option.value} */}
-                      {/*           value={option.value} */}
-                      {/*         > */}
-                      {/*           {option.label} */}
-                      {/*         </MultiSelectorItem> */}
-                      {/*       ))} */}
-                      {/*     </MultiSelectorList> */}
-                      {/*   </MultiSelectorContent> */}
-                      {/* </MultiSelector> */}
                     </section>
 
                     <Label
