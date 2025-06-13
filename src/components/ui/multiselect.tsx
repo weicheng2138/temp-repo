@@ -80,8 +80,13 @@ interface MultipleSelectorProps {
   >;
   /** hide the clear all button. */
   hideClearAllButton?: boolean;
-  /** Enable virtualizer for masive data. */
+
+  /** Enable virtualizer for tremendous data. */
   isVirtualized?: boolean;
+  /** Loading flag from outside onetime Loading state */
+  loading?: boolean;
+  /** Given fix CommandItem height for virtualized section */
+  distinctHeightForCommandItem?: number;
 }
 
 export interface MultipleSelectorRef {
@@ -200,7 +205,10 @@ const MultipleSelector = ({
   commandProps,
   inputProps,
   hideClearAllButton = false,
+
   isVirtualized = false,
+  loading = false,
+  distinctHeightForCommandItem = 32,
 }: MultipleSelectorProps) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
@@ -233,7 +241,7 @@ const MultipleSelector = ({
     count: virtualizedOptions.length,
     // count: arrayOptions ? arrayOptions.length : 0,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 32,
+    estimateSize: () => distinctHeightForCommandItem,
     overscan: 5,
   });
 
@@ -622,7 +630,7 @@ const MultipleSelector = ({
           {open && (
             <CommandList
               ref={parentRef}
-              className="bg-popover text-popover-foreground shadow-lg outline-hidden h-60"
+              className="bg-popover text-popover-foreground shadow-lg outline-hidden"
               onMouseLeave={() => {
                 setOnScrollbar(false);
               }}
@@ -633,7 +641,7 @@ const MultipleSelector = ({
                 inputRef?.current?.focus();
               }}
             >
-              {isLoading ? (
+              {isLoading || loading ? (
                 <>{loadingIndicator}</>
               ) : (
                 <>
@@ -722,13 +730,14 @@ const MultipleSelector = ({
                               onChange?.(newOptions);
                             }}
                             className={cn(
-                              "absolute top-0 left-0 w-full h-9",
+                              "absolute top-0 left-0 w-full",
                               "cursor-pointer",
                               virtualizedOptions[virtualRow.index].disabled &&
                                 "pointer-events-none cursor-not-allowed opacity-50",
                             )}
                             style={{
                               transform: `translateY(${virtualRow.start}px)`,
+                              height: distinctHeightForCommandItem,
                             }}
                           >
                             {virtualizedOptions[virtualRow.index].label}

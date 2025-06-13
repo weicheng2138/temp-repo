@@ -32,7 +32,7 @@ import { unknown, z, ZodError, ZodOptional, ZodTypeAny } from "zod";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ListMinus, ListPlus } from "lucide-react";
+import { ListMinus, ListPlus, Loader } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -367,6 +367,11 @@ export function AddEditInputNodeDialog({
                         isVirtualized
                         value={currentProductNames}
                         onChange={(options) => setCurrentProductNames(options)}
+                        loadingIndicator={
+                          <div className="flex w-full justify-center">
+                            <Loader className="animate-spin my-3" />
+                          </div>
+                        }
                         commandProps={{
                           label: "Select Product Names",
                         }}
