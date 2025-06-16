@@ -129,4 +129,23 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+
+  /* In your global CSS file */
+  ::-webkit-scrollbar {
+    width: 10px; /* Scrollbar width */
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted rounded-b-md;
+    /* margin: 100px 10px; */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-sm bg-muted-foreground/30;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground;
+  }
 }
