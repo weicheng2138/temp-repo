@@ -307,9 +307,9 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
 }
 
 function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
-  const { state, isMobile, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } = useSidebar();
-  const mainWidth = `w-[calc(100vw-${SIDEBAR_WIDTH})]`;
-  const mainWidthIcon = `w-[calc(100vw-${SIDEBAR_WIDTH_ICON})]`;
+  const { state, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } = useSidebar();
+  // const mainWidth = `w-[calc(100vw-${SIDEBAR_WIDTH})]`;
+  // const mainWidthIcon = `w-[calc(100vw-${SIDEBAR_WIDTH_ICON})]`;
   return (
     <main
       data-slot="sidebar-inset"
@@ -317,11 +317,13 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
         "bg-background relative flex w-full flex-1 flex-col",
         "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2",
         className,
-        [state === "collapsed" ? mainWidthIcon : mainWidth],
-        {
-          "w-svw": isMobile,
-        },
       )}
+      style={{
+        width:
+          state === "collapsed"
+            ? `calc(100vw - ${SIDEBAR_WIDTH_ICON})`
+            : `calc(100vw - ${SIDEBAR_WIDTH})`,
+      }}
       {...props}
     />
   );

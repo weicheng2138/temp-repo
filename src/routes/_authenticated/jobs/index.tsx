@@ -291,7 +291,7 @@ function RouteComponent() {
           value={masterProcessId}
           onValueChange={(value) => setMasterProcessId(value)}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="flex-1">
             <SelectValue placeholder={t("jobs.master-process")} />
           </SelectTrigger>
           <SelectContent>
