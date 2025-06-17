@@ -106,6 +106,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: "/modified-virtual-table",
         icon: FlaskConical,
       },
+      {
+        name: "Data Table",
+        url: "/flows",
+        icon: FlaskConical,
+      },
     ],
   };
   return (

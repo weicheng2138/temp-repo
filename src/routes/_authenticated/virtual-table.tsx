@@ -27,17 +27,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { cn, sqliteJsonToZodSchema } from "@/lib/utils";
+import { sqliteJsonToZodSchema } from "@/lib/utils";
 import { z } from "zod/v4";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import VirtualColumnTable from "@/components/virtual-column-table";
 
 export const Route = createFileRoute("/_authenticated/virtual-table")({
   component: RouteComponent,
@@ -47,8 +40,8 @@ const data = Array(100)
   .fill(100)
   .map((el, index) => ({
     NAME: "PRO_EEE_" + index,
-    CODE: index,
-    CODE1: index,
+    CODE: index + new Date().getTime(),
+    CODE1: index + new Date().getTime(),
     CODE2: index,
     CODE3: index,
     CODE4: index,
@@ -162,9 +155,19 @@ function generateColumns<T extends Record<string, unknown>>(
 ): ColumnDef<T>[] {
   const dataDisplayFields = fields.map((field) => ({
     accessorKey: field,
-    header: field,
-    size: 96, //default 150
-    cell: (info: CellContext<T, unknown>) => String(info.getValue()),
+    // size: 96, //default 150
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {field}
+          <ArrowUpDown />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="lowercase">{row.getValue(field)}</div>,
   })) as ColumnDef<T>[];
   return [
     {
@@ -287,96 +290,8 @@ function RouteComponent() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div
-        ref={tableContainerRef}
-        className="relative w-full overflow-x-auto border rounded-md"
-      >
-        <Table className="grid">
-          <TableHeader className="grid sticky top-0">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="flex w-full">
-                {virtualPaddingLeft ? (
-                  //fake empty column to the left for virtualization scroll padding
-                  <th style={{ display: "flex", width: virtualPaddingLeft }} />
-                ) : null}
-                {virtualColumns.map((virtualColumn) => {
-                  const header = headerGroup.headers[virtualColumn.index];
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className={cn("flex justify-start items-center")}
-                      style={{
-                        width: header.getSize(),
-                      }}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-                {virtualPaddingRight ? (
-                  //fake empty column to the right for virtualization scroll padding
-                  <th style={{ display: "flex", width: virtualPaddingRight }} />
-                ) : null}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody className="grid">
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  className="flex w-full"
-                >
-                  {virtualPaddingLeft ? (
-                    //fake empty column to the left for virtualization scroll padding
-                    <th
-                      style={{ display: "flex", width: virtualPaddingLeft }}
-                    />
-                  ) : null}
-                  {virtualColumns.map((virtualColumn) => {
-                    const cell = row.getVisibleCells()[virtualColumn.index];
-                    return (
-                      <TableCell
-                        key={cell.id}
-                        className={cn("flex justify-start items-center")}
-                        style={{
-                          width: cell.column.getSize(),
-                        }}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    );
-                  })}
-                  {virtualPaddingRight ? (
-                    //fake empty column to the right for virtualization scroll padding
-                    <th
-                      style={{ display: "flex", width: virtualPaddingRight }}
-                    />
-                  ) : null}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+
+      <VirtualColumnTable table={table} />
 
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="text-muted-foreground flex-1 text-sm">
