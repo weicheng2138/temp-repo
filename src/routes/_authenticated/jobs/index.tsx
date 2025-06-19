@@ -30,6 +30,7 @@ import {
   getIncomers,
   getOutgoers,
   getConnectedEdges,
+  Background,
 } from "@xyflow/react";
 import {
   TooltipNode,
@@ -40,40 +41,51 @@ import { DevTools } from "@/components/devtools";
 
 import { NumNode } from "@/components/nodes/num-node";
 import { SumNode } from "@/components/nodes/sum-node";
+import { InputInfoNode } from "@/components/nodes/input-info-node";
+import { CalculateNode } from "@/components/nodes/calculate-node";
 
 import { DataEdge } from "@/components/data-edge";
 import { AddEditInputNodeDialog } from "@/components/dialogs/add-edit-input-node-dialog";
 import { AddEditTestDialog } from "@/components/dialogs/add-edit-test-dialog";
 import { Button } from "@/components/ui/button";
+import { NodeHeader } from "@/components/node-header";
+import { NODE_TYPES } from "@/lib/constants";
 
+const { NODE_TYPES_KV } = NODE_TYPES;
 const nodeTypes = {
-  num: NumNode,
-  sum: SumNode,
-  tooltip: memo(({ selected }: NodeProps) => {
-    return (
-      <TooltipNode selected={selected}>
-        <TooltipContent position={Position.Right}>
-          Hidden Content
-        </TooltipContent>
-        <TooltipTrigger>Hover</TooltipTrigger>
-      </TooltipNode>
-    );
-  }),
+  inputInfo: memo(InputInfoNode),
+  calculate: memo(CalculateNode),
+  num: memo(NumNode),
+  sum: memo(SumNode),
+  // tooltip: memo(({ selected }: NodeProps) => {
+  //   return (
+  //     <TooltipNode selected={selected}>
+  //       <TooltipContent position={Position.Right}>
+  //         Hidden Content
+  //       </TooltipContent>
+  //       <TooltipTrigger>Hover</TooltipTrigger>
+  //     </TooltipNode>
+  //   );
+  // }),
+};
+
+const edgesTypes = {
+  data: DataEdge,
 };
 
 const initialNodes: Node[] = [
-  {
-    id: "a",
-    type: "num",
-    data: { value: 1, label: "one" },
-    position: { x: 0, y: 0 },
-  },
-  {
-    id: "b",
-    type: "num",
-    data: { value: 2, label: "two" },
-    position: { x: 300, y: 0 },
-  },
+  // {
+  //   id: "a",
+  //   type: "output",
+  //   data: { value: 1, label: "one" },
+  //   position: { x: 100, y: 100 },
+  // },
+  // {
+  //   id: "b",
+  //   type: "num",
+  //   data: { value: 2, label: "two" },
+  //   position: { x: 300, y: 0 },
+  // },
   // {
   //   id: "c",
   //   type: "sum",
@@ -92,15 +104,56 @@ const initialNodes: Node[] = [
   //   data: { value: 5, label: "five" },
   //   position: { x: 600, y: 400 },
   // },
+  {
+    id: "input-id",
+    type: NODE_TYPES_KV.INPUT_INFO,
+    data: {
+      value: 2,
+      label: "two",
+      code: null,
+      outputDataType: "DataTable",
+      inputProperties: [],
+    },
+    position: { x: 0, y: 0 },
+  },
+  {
+    id: "calculate-id1",
+    type: NODE_TYPES_KV.CALCULATE,
+    data: {
+      value: 1,
+      label: "one",
+      code: "WCA9IFBST19BQUEgKyBQUk9fQkJC",
+      outputDataType: "int",
+      outputName: "X",
+    },
+    position: { x: 300, y: 0 },
+  },
+  {
+    id: "calculate-id2",
+    type: NODE_TYPES_KV.CALCULATE,
+    data: {
+      value: 2,
+      label: "two",
+      code: "WCA9IFBST19BQUEgKyBQUk9fQkJC",
+      outputDataType: "int",
+      outputName: "Y",
+    },
+    position: { x: 300, y: 200 },
+  },
 ];
 
 const initialEdges: Edge[] = [
   {
-    id: "a->b",
-    source: "a",
-    target: "b",
-    sourceHandle: "id-top",
+    id: "1->2",
+    source: "calculate-id1",
+    target: "calculate-id2",
   },
+  // {
+  //   id: "a->b",
+  //   source: "a",
+  //   target: "b",
+  //   sourceHandle: "id-top",
+  // },
   // {
   //   id: "a->c",
   //   type: "data",
@@ -336,18 +389,25 @@ function RouteComponent() {
         {/*   fitView */}
         {/* /> */}
         {/* </div> */}
-        <div className="h-[400px] w-full bg-amber-50 rounded-md">
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            nodeTypes={nodeTypes}
-            fitView
-          >
-            <DevTools position="top-left" />
-          </ReactFlow>
+        <div className="h-[400px] w-full rounded-md">
+          <ReactFlowProvider>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              nodeTypes={nodeTypes}
+              edgeTypes={edgesTypes}
+              defaultEdgeOptions={{
+                animated: true,
+              }}
+              fitView
+            >
+              <DevTools position="top-left" />
+              <Background />
+            </ReactFlow>
+          </ReactFlowProvider>
         </div>
       </section>
     </div>

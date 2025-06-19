@@ -1,10 +1,33 @@
 import { Editor, Monaco } from "@monaco-editor/react";
+import { Button } from "@/components/ui/button";
+import { Check, Copy } from "lucide-react";
+import { useEffect, useState } from "react";
 
 type CodeEditorProps = {
   code: string | undefined;
   onChange: (value: string | undefined) => void;
 };
 function CodeEditor({ code, onChange }: CodeEditorProps) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = async () => {
+    try {
+      if (!code) {
+        return;
+      }
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+  useEffect(() => {
+    if (copied) {
+      const timer = setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [copied]);
   function handleEditorWillMount(monaco: Monaco) {
     // Register the Prophet language once
     monaco.languages.register({ id: "prophet" });
@@ -159,8 +182,8 @@ function CodeEditor({ code, onChange }: CodeEditorProps) {
         { token: "white", foreground: "000000" },
       ],
       colors: {
-        "editor.foreground": "#000000",
-        "editor.background": "#FFFFFF",
+        "editor.foreground": "#00FFFF",
+        "editor.background": "#F4F4F5",
         "editorCursor.foreground": "#000000",
         "editor.lineHighlightBackground": "#F0F0F0",
         "editorLineNumber.foreground": "#BBBBBB",
@@ -170,15 +193,36 @@ function CodeEditor({ code, onChange }: CodeEditorProps) {
     });
   }
   return (
-    <div className="bg-gray-200 p-4">
+    <div className="w-full flex flex-col bg-[#F4F4F5] p-2 rounded-md gap-2">
+      <Button
+        size="icon"
+        variant="outline"
+        type="button"
+        className="h-7 w-7 self-end"
+        onClick={handleCopy}
+      >
+        {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+      </Button>
+
       <Editor
         height="50vh"
-        width="500"
+        width="100%"
         defaultLanguage="prophet"
         // defaultValue={`If A = 0121 Then\n  // your code here\nEnd If`}
         defaultValue={`If A = 0121 Then\n  # your code here\nEnd If`}
         beforeMount={handleEditorWillMount}
         theme="prophetTheme"
+        value={code}
+        onChange={onChange}
+        options={{
+          minimap: {
+            enabled: false,
+          },
+          scrollbar: {
+            verticalScrollbarSize: 7,
+            horizontalScrollbarSize: 7,
+          },
+        }}
       />
     </div>
   );

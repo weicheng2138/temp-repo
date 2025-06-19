@@ -1,7 +1,5 @@
-import { format, addMinutes, set } from "date-fns";
-import { ReactNode, useId, useMemo, useState } from "react";
-import { Node, useNodeId, useReactFlow } from "@xyflow/react";
-import { toast } from "sonner";
+import { ReactNode, useEffect, useId, useMemo, useState } from "react";
+import { Node, useNodeId, useReactFlow, useNodesData } from "@xyflow/react";
 import { AnyFieldApi, useForm, useStore } from "@tanstack/react-form";
 import MultipleSelector, { Option } from "@/components/ui/multiselect";
 
@@ -26,11 +24,9 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { useDisclosure } from "@/hooks/use-disclosure";
 import { unknown, z, ZodError, ZodOptional, ZodTypeAny } from "zod";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ListMinus, ListPlus, Loader } from "lucide-react";
 import {
@@ -85,7 +81,7 @@ const productNamesOptions: Option[] = Array(2000)
 const initialVersion = ["20240612", "20250103", "20250505"];
 
 const inputNodeSchema = z.object({
-  name: z.string().min(1),
+  // name: z.string().min(1),
   inputProperties: z
     .array(
       z.object({
@@ -100,17 +96,18 @@ const inputNodeSchema = z.object({
     )
     .min(1),
 });
+type InputInfoData = z.infer<typeof inputNodeSchema>;
 
 type Props = {
   children?: ReactNode;
-  inputNode?: Node;
   dropdownNode?: ReactNode;
+  mode: "add" | "edit";
 };
 
 export function AddEditInputNodeDialog({
   children,
-  inputNode,
   dropdownNode,
+  mode,
 }: Props) {
   const trigger = dropdownNode || children;
   if (!trigger) {
@@ -118,17 +115,16 @@ export function AddEditInputNodeDialog({
   }
 
   const { isOpen, onClose, onToggle } = useDisclosure();
-  const isEditing = !!inputNode;
   const formId = useId();
   const [isSelectAll, setIsSelectAll] = useState(false);
   const [currentVersion, setCurrentVersion] = useState("");
   const [currentProductNames, setCurrentProductNames] = useState<Option[]>([]);
   const id = useNodeId();
-  const { updateNode } = useReactFlow();
+  const { updateNodeData, getNode } = useReactFlow();
 
   const form = useForm({
     defaultValues: {
-      name: inputNode ? (inputNode.data["label"] as string) : "",
+      // name: inputNode ? (inputNode.data["label"] as string) : "",
       inputProperties: [] as {
         version: string;
         productNames: Option[];
@@ -140,18 +136,8 @@ export function AddEditInputNodeDialog({
     onSubmit: async ({ value }) => {
       // Do something with form data
       console.log(value);
-      console.log("nodeId", id);
       if (id) {
-        updateNode(id, (node) => {
-          console.log(node);
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              label: value.name,
-            },
-          };
-        });
+        updateNodeData(id, value);
       }
       onClose();
     },
@@ -199,67 +185,19 @@ export function AddEditInputNodeDialog({
     return currentProductNames.length > 0;
   }, [isSelectAll, currentVersion, currentProductNames]);
 
-  // const getInitialDates = () => {
-  //   if (!startDate)
-  //     return { startDate: new Date(), endDate: addMinutes(new Date(), 30) };
-  //   const start = startTime
-  //     ? set(new Date(startDate), {
-  //         hours: startTime.hour,
-  //         minutes: startTime.minute,
-  //         seconds: 0,
-  //       })
-  //     : new Date(startDate);
-  //   const end = addMinutes(start, 30);
-  //   return { startDate: start, endDate: end };
-  // };
-
-  // const initialDates = getInitialDates();
-
-  // const parseEventDates = () => {
-  //   if (!event) return null;
-  //
-  //   return {
-  //     startDate: new Date(event.startDate),
-  //     endDate: new Date(event.endDate),
-  //   };
-  // };
-  //
-  // const eventDates = parseEventDates();
-
-  // const onSubmit = (values: TEventFormData) => {
-  //   try {
-  //     const targetCalendar = calendarOptions.find(
-  //       (option) => option.id === values.calendarId,
-  //     );
-  //     // Format event data for API
-  //     const formattedEvent: CalendarEvent = {
-  //       ...values,
-  //       startDate: format(values.startDate, "yyyy-MM-dd'T'HH:mm:ss"),
-  //       endDate: format(values.endDate, "yyyy-MM-dd'T'HH:mm:ss"),
-  //       id: isEditing ? event.id : Math.floor(Math.random() * 1000000),
-  //       color: values.color,
-  //       calendar: targetCalendar || {
-  //         id: "",
-  //         name: "Default Calendar",
-  //         type: "personal",
-  //       },
-  //     };
-  //
-  //     if (isEditing) {
-  //       updateEvent(formattedEvent);
-  //       toast.success("Event updated successfully");
-  //     } else {
-  //       addEvent(formattedEvent);
-  //       toast.success("Event created successfully");
-  //     }
-  //
-  //     onClose();
-  //     form.reset();
-  //   } catch (error) {
-  //     console.error(`Error ${isEditing ? "editing" : "adding"} event:`, error);
-  //     toast.error(`Failed to ${isEditing ? "edit" : "add"} event`);
-  //   }
-  // };
+  useEffect(() => {
+    if (mode === "edit" && id) {
+      const node = getNode(id);
+      if (!node) {
+        return;
+      }
+      const parsedData = inputNodeSchema.safeParse(node.data);
+      if (!parsedData.success) {
+        return;
+      }
+      form.setFieldValue("inputProperties", parsedData.data.inputProperties);
+    }
+  }, [isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChanged}>
@@ -271,11 +209,11 @@ export function AddEditInputNodeDialog({
       <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>
-            {isEditing ? "Edit Input Node" : "Add Input Node"}
+            {mode === "edit" ? "Edit Input Node" : "Add Input Node"}
           </DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? "Modify your existing input node -> " + inputNode.data["value"]
+            {mode === "edit"
+              ? "Modify your existing input node"
               : "Create a new input node."}
           </DialogDescription>
         </DialogHeader>
@@ -289,31 +227,31 @@ export function AddEditInputNodeDialog({
           }}
         >
           <div className="grid grid-cols-2 gap-1">
-            <form.Field
-              name="name"
-              children={(field) => {
-                return (
-                  <div className="flex flex-col col-span-2">
-                    <Label className="pb-1" htmlFor={field.name}>
-                      Name
-                      {requiredFields.includes(field.name) && (
-                        <span className="text-destructive">*</span>
-                      )}
-                    </Label>
-                    <Input
-                      id={field.name}
-                      isValid={
-                        !field.state.meta.isTouched || field.state.meta.isValid
-                      }
-                      placeholder="Name"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                    <FieldInfo field={field} />
-                  </div>
-                );
-              }}
-            />
+            {/* <form.Field */}
+            {/*   name="name" */}
+            {/*   children={(field) => { */}
+            {/*     return ( */}
+            {/*       <div className="flex flex-col col-span-2"> */}
+            {/*         <Label className="pb-1" htmlFor={field.name}> */}
+            {/*           Name */}
+            {/*           {requiredFields.includes(field.name) && ( */}
+            {/*             <span className="text-destructive">*</span> */}
+            {/*           )} */}
+            {/*         </Label> */}
+            {/*         <Input */}
+            {/*           id={field.name} */}
+            {/*           isValid={ */}
+            {/*             !field.state.meta.isTouched || field.state.meta.isValid */}
+            {/*           } */}
+            {/*           placeholder="Name" */}
+            {/*           value={field.state.value} */}
+            {/*           onChange={(e) => field.handleChange(e.target.value)} */}
+            {/*         /> */}
+            {/*         <FieldInfo field={field} /> */}
+            {/*       </div> */}
+            {/*     ); */}
+            {/*   }} */}
+            {/* /> */}
 
             <form.Field
               name="inputProperties"
@@ -478,7 +416,7 @@ export function AddEditInputNodeDialog({
                   disabled={!canSubmit}
                   // onClick={() => form.handleSubmit()}
                 >
-                  {isEditing ? "Save Changes" : "Create"}
+                  {mode === "edit" ? "Save Changes" : "Create"}
                 </Button>
               </>
             )}

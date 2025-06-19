@@ -1,6 +1,6 @@
 import { useCallback, ReactNode, ComponentProps } from "react";
 import { useNodeId, useReactFlow } from "@xyflow/react";
-import { EllipsisVertical, Pencil, Trash } from "lucide-react";
+import { Code, EllipsisVertical, Pencil, Trash } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Slot } from "@radix-ui/react-slot";
@@ -10,6 +10,8 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
 } from "@/components/ui/dropdown-menu";
+import { AddEditInputNodeDialog } from "@/components/dialogs/add-edit-input-node-dialog";
+import { EditCodeDialog } from "./dialogs/edit-code-dialog";
 
 /* NODE HEADER -------------------------------------------------------------- */
 
@@ -24,7 +26,7 @@ export const NodeHeader = ({ className, ...props }: NodeHeaderProps) => {
     <header
       {...props}
       className={cn(
-        "flex items-center justify-between gap-2 border-b-1 py-1 px-3",
+        "flex items-center justify-between gap-2 border-b-1 py-1 px-3 min-w-36",
         // Remove or modify these classes if you modify the padding in the
         // `<BaseNode />` component.
         className,
@@ -55,10 +57,7 @@ export const NodeHeaderTitle = ({
   return (
     <Comp
       {...props}
-      className={cn(
-        className,
-        "user-select-none flex-1 font-normal w-30 truncate",
-      )}
+      className={cn(className, "user-select-none flex-1 font-normal truncate")}
     />
   );
 };
@@ -196,19 +195,18 @@ NodeHeaderDeleteAction.displayName = "NodeHeaderDeleteAction";
 
 /* NODE HEADER EDIT ACTION --------------------------------------- */
 
-export const NodeHeaderEditAction = () => {
+export const NodeHeaderEditCodeAction = () => {
   const id = useNodeId();
-  const { setNodes } = useReactFlow();
-
-  const handleClick = useCallback(() => {
-    console.log(id);
-  }, [id, setNodes]);
+  const { getNode } = useReactFlow();
+  const currentNode = id ? getNode(id) : undefined;
 
   return (
-    <NodeHeaderAction variant="ghost" label="Edit node">
-      <Pencil />
-    </NodeHeaderAction>
+    <EditCodeDialog inputNode={currentNode}>
+      <NodeHeaderAction variant="ghost" label="Edit code">
+        <Code />
+      </NodeHeaderAction>
+    </EditCodeDialog>
   );
 };
 
-NodeHeaderDeleteAction.displayName = "NodeHeaderDeleteAction";
+NodeHeaderEditCodeAction.displayName = "NodeHeaderEditCodeAction";

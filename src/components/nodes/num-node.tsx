@@ -16,7 +16,6 @@ import {
   NodeHeaderMenuAction,
   NodeHeaderDeleteAction,
   NodeHeaderIcon,
-  NodeHeaderEditAction,
 } from "@/components/node-header";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
