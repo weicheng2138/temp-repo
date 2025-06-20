@@ -50,7 +50,7 @@ export function InputInfoNode({
     <BaseNode className="w-60" selected={selected}>
       <NodeHeader>
         <NodeHeaderTitle className="flex gap-1 py-1">
-          <Grid2x2 className="bg-purple-100 rounded-sm p-1" />
+          <Grid2x2 className="bg-purple-100 rounded-sm p-1 text-gray-800" />
           {`INPUT`}
         </NodeHeaderTitle>
         <NodeHeaderActions>
@@ -71,7 +71,9 @@ export function InputInfoNode({
               <Info className="w-3 h-3 opacity-60" />
             </TooltipTrigger>
             <TooltipContent>
-              <p>Choose the product that you going to run in this process</p>
+              <p className="w-40 text-balance">
+                Choose the product that you going to run in this process
+              </p>
             </TooltipContent>
           </Tooltip>
         </div>

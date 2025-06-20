@@ -52,6 +52,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: "/jobs",
         icon: FileSliders,
         disabled: false,
+        items: [
+          {
+            title: "Single Process",
+            url: "/jobs",
+          },
+          {
+            title: "All Jobs",
+            url: "#",
+          },
+          {
+            title: "All Processes",
+            url: "#",
+          },
+        ],
       },
       {
         title: t("monitoring"),

@@ -1,9 +1,8 @@
 import { ReactNode, useEffect, useId, useMemo, useState } from "react";
-import { Node, useNodeId, useReactFlow, useNodesData } from "@xyflow/react";
+import { useNodeId, useReactFlow } from "@xyflow/react";
 import { AnyFieldApi, useForm, useStore } from "@tanstack/react-form";
 import MultipleSelector, { Option } from "@/components/ui/multiselect";
 
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -25,9 +24,9 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useDisclosure } from "@/hooks/use-disclosure";
-import { unknown, z, ZodError, ZodOptional, ZodTypeAny } from "zod";
+import { z, ZodError } from "zod";
 import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { ListMinus, ListPlus, Loader } from "lucide-react";
 import {
   Table,
@@ -346,6 +345,7 @@ export function AddEditInputNodeDialog({
                         !field.state.meta.isTouched || field.state.meta.isValid
                       }
                     >
+                      <ScrollBar orientation="horizontal" />
                       <Table>
                         <TableHeader>
                           <TableRow>

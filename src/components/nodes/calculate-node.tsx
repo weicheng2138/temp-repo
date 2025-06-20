@@ -92,7 +92,7 @@ export function CalculateNode({
     <BaseNode selected={selected}>
       <NodeHeader>
         <NodeHeaderTitle className="flex gap-1 py-1">
-          <Calculator className="bg-green-200 rounded-sm p-1" />
+          <Calculator className="bg-green-200 rounded-sm p-1 text-gray-800" />
           {`CALCULATE`}
         </NodeHeaderTitle>
         <NodeHeaderActions>
@@ -131,7 +131,7 @@ export function CalculateNode({
               <Info className="w-3 h-3 opacity-60" />
             </TooltipTrigger>
             <TooltipContent>
-              <p>The name of the table field</p>
+              <p className="w-40">The name of the table field</p>
             </TooltipContent>
           </Tooltip>
         </div>
@@ -146,7 +146,9 @@ export function CalculateNode({
               <Info className="w-3 h-3 opacity-60" />
             </TooltipTrigger>
             <TooltipContent>
-              <p>Choose the data type for the calculate node</p>
+              <p className="w-40">
+                Choose the data type for the calculate node
+              </p>
             </TooltipContent>
           </Tooltip>
         </div>

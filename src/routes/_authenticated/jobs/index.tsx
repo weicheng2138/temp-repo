@@ -53,6 +53,7 @@ import { Button } from "@/components/ui/button";
 import { NodeHeader } from "@/components/node-header";
 import { NODE_TYPES } from "@/lib/constants";
 import { Rocket } from "lucide-react";
+import CreateNodeButton from "@/components/create-node-button";
 
 const { NODE_TYPES_KV } = NODE_TYPES;
 const nodeTypes = {
@@ -322,7 +323,7 @@ function RouteComponent() {
   );
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-2">
       <section className="flex gap-2">
         <Select
           value={workspaceId}
@@ -347,7 +348,7 @@ function RouteComponent() {
           value={masterProcessId}
           onValueChange={(value) => setMasterProcessId(value)}
         >
-          <SelectTrigger className="flex-1">
+          <SelectTrigger>
             <SelectValue placeholder={t("jobs.master-process")} />
           </SelectTrigger>
           <SelectContent>
@@ -361,12 +362,13 @@ function RouteComponent() {
             </SelectGroup>
           </SelectContent>
         </Select>
+        <CreateNodeButton />
       </section>
-      <section className="flex gap-2 flex-col text-wrap">
-        {isFetchingProcess && <p>Loading...</p>}
-        {!isFetchingProcess && currentProcess && JSON.stringify(currentProcess)}
-        {!isFetchingProcess && !currentProcess && "No Master Process"}
-      </section>
+      {/* <section className="flex gap-2 flex-col text-wrap"> */}
+      {/*   {isFetchingProcess && <p>Loading...</p>} */}
+      {/*   {!isFetchingProcess && currentProcess && JSON.stringify(currentProcess)} */}
+      {/*   {!isFetchingProcess && !currentProcess && "No Master Process"} */}
+      {/* </section> */}
       <section>
         {/* <CodeEditor code={code} onChange={setCode} /> */}
 

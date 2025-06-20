@@ -93,6 +93,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { z } from "zod";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export const schema = z.object({
   id: z.number(),
@@ -469,7 +470,8 @@ export function DataTable({
         value="outline"
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
       >
-        <div className="overflow-hidden rounded-lg border">
+        <ScrollArea className="rounded-lg border">
+          <ScrollBar orientation="horizontal" />
           <DndContext
             collisionDetection={closestCenter}
             modifiers={[restrictToVerticalAxis]}
@@ -519,7 +521,7 @@ export function DataTable({
               </TableBody>
             </Table>
           </DndContext>
-        </div>
+        </ScrollArea>
         <div className="flex items-center justify-between px-4">
           <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
             {table.getFilteredSelectedRowModel().rows.length} of{" "}
