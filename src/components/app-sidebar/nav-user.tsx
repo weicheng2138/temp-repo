@@ -18,10 +18,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useState } from "react";
+import { use, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { LOCALE } from "@/lib/constants";
+import { LOCALE, THEME } from "@/lib/constants";
+import { ThemeProviderContext, type Theme } from "@/components/theme-provider";
 
 export function NavUser({
   user,
@@ -32,7 +33,14 @@ export function NavUser({
     avatar: string;
   };
 }) {
+  const context = use(ThemeProviderContext);
+  if (!context) {
+    throw new Error("ModeToggle must be used within a ThemeProvider");
+  }
+
+  const { setTheme, theme } = context;
   const { LOCALE_LIST } = LOCALE;
+  const { THEME_LIST } = THEME;
   const { isMobile } = useSidebar();
   const { i18n, t } = useTranslation();
   const [locale, setLocale] = useState<string>(i18n.language);
@@ -42,6 +50,14 @@ export function NavUser({
       setLocale(value);
     } catch (error) {
       toast.error("Fail to change language");
+    }
+  };
+  const handleThemeChange = (value: Theme) => {
+    try {
+      console.log(value);
+      setTheme(value);
+    } catch (error) {
+      toast.error("Fail to change theme");
     }
   };
 
@@ -108,6 +124,21 @@ export function NavUser({
               onValueChange={handleLocaleChange}
             >
               {LOCALE_LIST.map((lang) => (
+                <DropdownMenuRadioItem key={lang.key} value={lang.value}>
+                  {t(lang.localeKey)}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+            <DropdownMenuSeparator />
+
+            <DropdownMenuLabel>
+              {t("layout.sidebar.user-settings.themes")}
+            </DropdownMenuLabel>
+            <DropdownMenuRadioGroup
+              value={theme}
+              onValueChange={(value) => handleThemeChange(value as Theme)}
+            >
+              {THEME_LIST.map((lang) => (
                 <DropdownMenuRadioItem key={lang.key} value={lang.value}>
                   {t(lang.localeKey)}
                 </DropdownMenuRadioItem>

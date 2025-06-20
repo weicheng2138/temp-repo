@@ -7,6 +7,10 @@
         "languages": "語言設定",
         "language-en": "英文",
         "language-zh": "中文",
+        "themes": "主題",
+        "theme-light": "淺色",
+        "theme-dark": "深色",
+        "theme-system": "系統",
         "logout": "登出"
       },
       "main-menus": {

@@ -31,6 +31,8 @@ import {
   getOutgoers,
   getConnectedEdges,
   Background,
+  ControlButton,
+  Controls,
 } from "@xyflow/react";
 import {
   TooltipNode,
@@ -50,6 +52,7 @@ import { AddEditTestDialog } from "@/components/dialogs/add-edit-test-dialog";
 import { Button } from "@/components/ui/button";
 import { NodeHeader } from "@/components/node-header";
 import { NODE_TYPES } from "@/lib/constants";
+import { Rocket } from "lucide-react";
 
 const { NODE_TYPES_KV } = NODE_TYPES;
 const nodeTypes = {
@@ -389,7 +392,7 @@ function RouteComponent() {
         {/*   fitView */}
         {/* /> */}
         {/* </div> */}
-        <div className="h-[400px] w-full rounded-md">
+        <div className="h-[calc(100vh-140px)] w-full rounded-md">
           <ReactFlowProvider>
             <ReactFlow
               nodes={nodes}
@@ -404,6 +407,13 @@ function RouteComponent() {
               }}
               fitView
             >
+              <Controls>
+                <ControlButton
+                  onClick={() => alert("Something magical just happened. ✨")}
+                >
+                  <Rocket />
+                </ControlButton>
+              </Controls>
               <DevTools position="top-left" />
               <Background />
             </ReactFlow>

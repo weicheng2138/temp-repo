@@ -7,6 +7,10 @@
         "languages": "Languages",
         "language-en": "English",
         "language-zh": "Chinese",
+        "themes": "Themes",
+        "theme-light": "Light",
+        "theme-dark": "Dark",
+        "theme-system": "System",
         "logout": "Logout"
       },
       "main-menus": {

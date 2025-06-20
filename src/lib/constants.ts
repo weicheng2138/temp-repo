@@ -16,6 +16,27 @@ export const LOCALE = defineConstants(
   "LOCALE",
 );
 
+export const THEME = defineConstants(
+  [
+    {
+      key: "LIGHT",
+      value: "light",
+      localeKey: "layout.sidebar.user-settings.theme-light",
+    },
+    {
+      key: "DARK",
+      value: "dark",
+      localeKey: "layout.sidebar.user-settings.theme-dark",
+    },
+    {
+      key: "SYSTEM",
+      value: "system",
+      localeKey: "layout.sidebar.user-settings.theme-system",
+    },
+  ] as const,
+  "THEME",
+);
+
 /**
  * CAUTION
  * !!! Do not use input, output and default to be the value
