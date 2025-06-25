@@ -20,11 +20,27 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
-import { NotificationBadge } from "../notification-badge";
-import i18n from "@/i18n";
+import { NotificationBadge } from "@/components/notification-badge";
 import { useTranslation } from "react-i18next";
 
+function SidebarBadge({
+  children,
+  label,
+}: {
+  label: string | number;
+  children: React.ReactNode;
+}) {
+  const { isMobile, state } = useSidebar();
+  const labelString = state === "collapsed" && !isMobile ? "" : label;
+
+  return (
+    <NotificationBadge variant="destructive" label={labelString}>
+      {children}
+    </NotificationBadge>
+  );
+}
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { t } = useTranslation("route");
   // This is sample data.
@@ -125,9 +141,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <NotificationBadge label="" variant="destructive">
+        <SidebarBadge label={data.teams.length}>
           <NavHeader teams={data.teams} />
-        </NotificationBadge>
+        </SidebarBadge>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

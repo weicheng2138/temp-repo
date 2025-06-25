@@ -23,8 +23,8 @@ export const NotificationBadge = ({
           className={cn(
             "absolute top-0 right-0 rounded-full",
             typeof label !== "undefined" && ("" + label).length === 0
-              ? "translate-x-1 -translate-y-1 px-1.5 py-1.5"
-              : "translate-x-1.5 -translate-y-1.5 px-2",
+              ? "translate-x-1 -translate-y-1 px-1 py-1"
+              : "translate-x-1.5 -translate-y-1.5 px-1.5",
             className,
           )}
           {...props}
