@@ -409,7 +409,7 @@ function RouteComponent() {
               }}
               fitView
             >
-              <Controls>
+              <Controls showZoom={false}>
                 <ControlButton
                   onClick={() => alert("Something magical just happened. ✨")}
                 >

@@ -80,27 +80,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         disabled: true,
       },
       {
-        title: "Settings",
-        url: "#",
+        title: "Admin Settings",
+        url: "/settings",
         icon: Settings2,
-        disabled: true,
+        disabled: false,
         items: [
           {
             title: "General",
-            url: "#",
+            url: "/settings",
           },
           {
-            title: "Team",
-            url: "#",
+            title: "User",
+            url: "/settings/user",
           },
-          {
-            title: "Billing",
-            url: "#",
-          },
-          {
-            title: "Limits",
-            url: "#",
-          },
+          // {
+          //   title: "Billing",
+          //   url: "#",
+          // },
+          // {
+          //   title: "Limits",
+          //   url: "#",
+          // },
         ],
       },
     ],
@@ -113,11 +113,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         name: "Virtual Data Table",
         url: "/virtual-table",
-        icon: FlaskConical,
-      },
-      {
-        name: "Modified Virtual Table",
-        url: "/modified-virtual-table",
         icon: FlaskConical,
       },
       {

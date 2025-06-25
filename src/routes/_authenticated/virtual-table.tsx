@@ -251,7 +251,7 @@ function RouteComponent() {
     table.setPageSize(10);
     // console.log(table.getColumn("select")?.getSize());
     // console.log(table.getRowModel().rows[0].getVisibleCells()[0].column);
-  }, []);
+  }, [table]);
   return (
     <div className="w-full p-4 mb-8 flex flex-col">
       <div className="flex items-center py-4">

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { DataTable } from "@/components/data-table";
+import { DataTable } from "@/components/tables/data-table";
 
 export const Route = createFileRoute("/_authenticated/flows")({
   component: RouteComponent,

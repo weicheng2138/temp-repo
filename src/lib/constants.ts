@@ -81,3 +81,24 @@ export const OUTPUT_DATA_TYPE = defineConstants(
   ] as const,
   "OUTPUT_DATA_TYPE",
 );
+
+export const USER_STATUS = defineConstants(
+  [
+    {
+      key: "OFFLINE",
+      value: 0,
+      label: "Offline",
+    },
+    {
+      key: "ONLINE",
+      value: 1,
+      label: "Online",
+    },
+    {
+      key: "BANNED",
+      value: 2,
+      label: "Banned",
+    },
+  ] as const,
+  "USER_STATUS",
+);

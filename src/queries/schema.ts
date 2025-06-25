@@ -1,4 +1,5 @@
 import { z } from "zod/v4";
+import { USER_STATUS } from "@/lib/constants";
 
 z.config(z.locales.en());
 
@@ -51,3 +52,9 @@ export const searchParamsSchema = z.object({
 });
 
 export type SearchParams = z.infer<typeof searchParamsSchema>;
+
+export const userSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  status: z.literal(USER_STATUS.USER_STATUS_VALUES),
+});

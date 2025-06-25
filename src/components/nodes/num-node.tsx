@@ -57,25 +57,6 @@ export function NumNode({ id, data }: NodeProps<NumNode>) {
         {/*   <TestTubeDiagonal /> */}
         {/* </NodeHeaderIcon> */}
         <NodeHeaderTitle>{`Node Name ${data.label}`}</NodeHeaderTitle>
-        <NodeHeaderActions>
-          <AddEditInputNodeDialog
-            inputNode={currentNode}
-            dropdownNode={
-              <NodeHeaderMenuAction label="Open node menu">
-                <DialogTrigger className="w-full">
-                  <DropdownMenuItem>
-                    <Pencil />
-                    Edit
-                  </DropdownMenuItem>
-                </DialogTrigger>
-                <DropdownMenuItem onSelect={handleDelete}>
-                  <Trash />
-                  Delete
-                </DropdownMenuItem>
-              </NodeHeaderMenuAction>
-            }
-          />
-        </NodeHeaderActions>
       </NodeHeader>
 
       <div className="flex gap-2 items-center mb-10">

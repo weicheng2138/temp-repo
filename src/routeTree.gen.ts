@@ -15,12 +15,13 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated/route
 import { Route as IndexImport } from './routes/index'
 import { Route as AuthenticatedVirtualTableImport } from './routes/_authenticated/virtual-table'
 import { Route as AuthenticatedRequestUsageImport } from './routes/_authenticated/request-usage'
-import { Route as AuthenticatedModifiedVirtualTableImport } from './routes/_authenticated/modified-virtual-table'
 import { Route as AuthenticatedDashboardImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCalendarImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedJobsRouteImport } from './routes/_authenticated/jobs/route'
 import { Route as AuthenticatedFlowsRouteImport } from './routes/_authenticated/flows/route'
+import { Route as AuthenticatedSettingsIndexImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedJobsIndexImport } from './routes/_authenticated/jobs/index'
+import { Route as AuthenticatedSettingsUserImport } from './routes/_authenticated/settings/user'
 import { Route as AuthenticatedJobsProcessIdImport } from './routes/_authenticated/jobs/$processId'
 
 // Create/Update Routes
@@ -48,13 +49,6 @@ const AuthenticatedRequestUsageRoute = AuthenticatedRequestUsageImport.update({
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
-const AuthenticatedModifiedVirtualTableRoute =
-  AuthenticatedModifiedVirtualTableImport.update({
-    id: '/modified-virtual-table',
-    path: '/modified-virtual-table',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-
 const AuthenticatedDashboardRoute = AuthenticatedDashboardImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -79,10 +73,24 @@ const AuthenticatedFlowsRouteRoute = AuthenticatedFlowsRouteImport.update({
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
+const AuthenticatedSettingsIndexRoute = AuthenticatedSettingsIndexImport.update(
+  {
+    id: '/settings/',
+    path: '/settings/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any,
+)
+
 const AuthenticatedJobsIndexRoute = AuthenticatedJobsIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedJobsRouteRoute,
+} as any)
+
+const AuthenticatedSettingsUserRoute = AuthenticatedSettingsUserImport.update({
+  id: '/settings/user',
+  path: '/settings/user',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 const AuthenticatedJobsProcessIdRoute = AuthenticatedJobsProcessIdImport.update(
@@ -139,13 +147,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardImport
       parentRoute: typeof AuthenticatedRouteImport
     }
-    '/_authenticated/modified-virtual-table': {
-      id: '/_authenticated/modified-virtual-table'
-      path: '/modified-virtual-table'
-      fullPath: '/modified-virtual-table'
-      preLoaderRoute: typeof AuthenticatedModifiedVirtualTableImport
-      parentRoute: typeof AuthenticatedRouteImport
-    }
     '/_authenticated/request-usage': {
       id: '/_authenticated/request-usage'
       path: '/request-usage'
@@ -167,12 +168,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedJobsProcessIdImport
       parentRoute: typeof AuthenticatedJobsRouteImport
     }
+    '/_authenticated/settings/user': {
+      id: '/_authenticated/settings/user'
+      path: '/settings/user'
+      fullPath: '/settings/user'
+      preLoaderRoute: typeof AuthenticatedSettingsUserImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
     '/_authenticated/jobs/': {
       id: '/_authenticated/jobs/'
       path: '/'
       fullPath: '/jobs/'
       preLoaderRoute: typeof AuthenticatedJobsIndexImport
       parentRoute: typeof AuthenticatedJobsRouteImport
+    }
+    '/_authenticated/settings/': {
+      id: '/_authenticated/settings/'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsIndexImport
+      parentRoute: typeof AuthenticatedRouteImport
     }
   }
 }
@@ -200,9 +215,10 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedJobsRouteRoute: typeof AuthenticatedJobsRouteRouteWithChildren
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedModifiedVirtualTableRoute: typeof AuthenticatedModifiedVirtualTableRoute
   AuthenticatedRequestUsageRoute: typeof AuthenticatedRequestUsageRoute
   AuthenticatedVirtualTableRoute: typeof AuthenticatedVirtualTableRoute
+  AuthenticatedSettingsUserRoute: typeof AuthenticatedSettingsUserRoute
+  AuthenticatedSettingsIndexRoute: typeof AuthenticatedSettingsIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -210,10 +226,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedJobsRouteRoute: AuthenticatedJobsRouteRouteWithChildren,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedModifiedVirtualTableRoute:
-    AuthenticatedModifiedVirtualTableRoute,
   AuthenticatedRequestUsageRoute: AuthenticatedRequestUsageRoute,
   AuthenticatedVirtualTableRoute: AuthenticatedVirtualTableRoute,
+  AuthenticatedSettingsUserRoute: AuthenticatedSettingsUserRoute,
+  AuthenticatedSettingsIndexRoute: AuthenticatedSettingsIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -226,11 +242,12 @@ export interface FileRoutesByFullPath {
   '/jobs': typeof AuthenticatedJobsRouteRouteWithChildren
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/modified-virtual-table': typeof AuthenticatedModifiedVirtualTableRoute
   '/request-usage': typeof AuthenticatedRequestUsageRoute
   '/virtual-table': typeof AuthenticatedVirtualTableRoute
   '/jobs/$processId': typeof AuthenticatedJobsProcessIdRoute
+  '/settings/user': typeof AuthenticatedSettingsUserRoute
   '/jobs/': typeof AuthenticatedJobsIndexRoute
+  '/settings': typeof AuthenticatedSettingsIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -239,11 +256,12 @@ export interface FileRoutesByTo {
   '/flows': typeof AuthenticatedFlowsRouteRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/modified-virtual-table': typeof AuthenticatedModifiedVirtualTableRoute
   '/request-usage': typeof AuthenticatedRequestUsageRoute
   '/virtual-table': typeof AuthenticatedVirtualTableRoute
   '/jobs/$processId': typeof AuthenticatedJobsProcessIdRoute
+  '/settings/user': typeof AuthenticatedSettingsUserRoute
   '/jobs': typeof AuthenticatedJobsIndexRoute
+  '/settings': typeof AuthenticatedSettingsIndexRoute
 }
 
 export interface FileRoutesById {
@@ -254,11 +272,12 @@ export interface FileRoutesById {
   '/_authenticated/jobs': typeof AuthenticatedJobsRouteRouteWithChildren
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/modified-virtual-table': typeof AuthenticatedModifiedVirtualTableRoute
   '/_authenticated/request-usage': typeof AuthenticatedRequestUsageRoute
   '/_authenticated/virtual-table': typeof AuthenticatedVirtualTableRoute
   '/_authenticated/jobs/$processId': typeof AuthenticatedJobsProcessIdRoute
+  '/_authenticated/settings/user': typeof AuthenticatedSettingsUserRoute
   '/_authenticated/jobs/': typeof AuthenticatedJobsIndexRoute
+  '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -270,11 +289,12 @@ export interface FileRouteTypes {
     | '/jobs'
     | '/calendar'
     | '/dashboard'
-    | '/modified-virtual-table'
     | '/request-usage'
     | '/virtual-table'
     | '/jobs/$processId'
+    | '/settings/user'
     | '/jobs/'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -282,11 +302,12 @@ export interface FileRouteTypes {
     | '/flows'
     | '/calendar'
     | '/dashboard'
-    | '/modified-virtual-table'
     | '/request-usage'
     | '/virtual-table'
     | '/jobs/$processId'
+    | '/settings/user'
     | '/jobs'
+    | '/settings'
   id:
     | '__root__'
     | '/'
@@ -295,11 +316,12 @@ export interface FileRouteTypes {
     | '/_authenticated/jobs'
     | '/_authenticated/calendar'
     | '/_authenticated/dashboard'
-    | '/_authenticated/modified-virtual-table'
     | '/_authenticated/request-usage'
     | '/_authenticated/virtual-table'
     | '/_authenticated/jobs/$processId'
+    | '/_authenticated/settings/user'
     | '/_authenticated/jobs/'
+    | '/_authenticated/settings/'
   fileRoutesById: FileRoutesById
 }
 
@@ -337,9 +359,10 @@ export const routeTree = rootRoute
         "/_authenticated/jobs",
         "/_authenticated/calendar",
         "/_authenticated/dashboard",
-        "/_authenticated/modified-virtual-table",
         "/_authenticated/request-usage",
-        "/_authenticated/virtual-table"
+        "/_authenticated/virtual-table",
+        "/_authenticated/settings/user",
+        "/_authenticated/settings/"
       ]
     },
     "/_authenticated/flows": {
@@ -362,10 +385,6 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/dashboard.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/modified-virtual-table": {
-      "filePath": "_authenticated/modified-virtual-table.tsx",
-      "parent": "/_authenticated"
-    },
     "/_authenticated/request-usage": {
       "filePath": "_authenticated/request-usage.tsx",
       "parent": "/_authenticated"
@@ -378,9 +397,17 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/jobs/$processId.tsx",
       "parent": "/_authenticated/jobs"
     },
+    "/_authenticated/settings/user": {
+      "filePath": "_authenticated/settings/user.tsx",
+      "parent": "/_authenticated"
+    },
     "/_authenticated/jobs/": {
       "filePath": "_authenticated/jobs/index.tsx",
       "parent": "/_authenticated/jobs"
+    },
+    "/_authenticated/settings/": {
+      "filePath": "_authenticated/settings/index.tsx",
+      "parent": "/_authenticated"
     }
   }
 }

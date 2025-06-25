@@ -30,7 +30,7 @@ export function SumNode({ id }: NodeProps<SumNode>) {
 
   useEffect(() => {
     updateNodeData(id, { value: x + y });
-  }, [x, y]);
+  }, [x, y, id, updateNodeData]);
 
   return (
     <BaseNode className="w-32">
