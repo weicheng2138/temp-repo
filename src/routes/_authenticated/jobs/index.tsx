@@ -64,7 +64,7 @@ const nodeTypes = {
   // tooltip: memo(({ selected }: NodeProps) => {
   //   return (
   //     <TooltipNode selected={selected}>
-  //       <TooltipContent position={Position.Right}>
+  //       <TooltipContent position={Positionight}>
   //         Hidden Content
   //       </TooltipContent>
   //       <TooltipTrigger>Hover</TooltipTrigger>
@@ -409,8 +409,14 @@ function RouteComponent() {
               }}
               fitView
             >
-              <Controls showZoom={false}>
+              <Controls
+                showZoom={false}
+                style={{
+                  backgroundColor: "red",
+                }}
+              >
                 <ControlButton
+                  className="bg-red-200"
                   onClick={() => alert("Something magical just happened. ✨")}
                 >
                   <Rocket />
