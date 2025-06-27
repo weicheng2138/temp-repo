@@ -8,191 +8,260 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedVirtualTableRouteImport } from './routes/_authenticated/virtual-table'
+import { Route as AuthenticatedRequestUsageRouteImport } from './routes/_authenticated/request-usage'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
+import { Route as AuthenticatedJobsRouteRouteImport } from './routes/_authenticated/jobs/route'
+import { Route as AuthenticatedFlowsRouteRouteImport } from './routes/_authenticated/flows/route'
+import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
+import { Route as AuthenticatedJobsIndexRouteImport } from './routes/_authenticated/jobs/index'
+import { Route as AuthenticatedSettingsUserRouteImport } from './routes/_authenticated/settings/user'
+import { Route as AuthenticatedJobsProcessIdRouteImport } from './routes/_authenticated/jobs/$processId'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated/route'
-import { Route as IndexImport } from './routes/index'
-import { Route as AuthenticatedVirtualTableImport } from './routes/_authenticated/virtual-table'
-import { Route as AuthenticatedRequestUsageImport } from './routes/_authenticated/request-usage'
-import { Route as AuthenticatedDashboardImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedCalendarImport } from './routes/_authenticated/calendar'
-import { Route as AuthenticatedJobsRouteImport } from './routes/_authenticated/jobs/route'
-import { Route as AuthenticatedFlowsRouteImport } from './routes/_authenticated/flows/route'
-import { Route as AuthenticatedSettingsIndexImport } from './routes/_authenticated/settings/index'
-import { Route as AuthenticatedJobsIndexImport } from './routes/_authenticated/jobs/index'
-import { Route as AuthenticatedSettingsUserImport } from './routes/_authenticated/settings/user'
-import { Route as AuthenticatedJobsProcessIdImport } from './routes/_authenticated/jobs/$processId'
-
-// Create/Update Routes
-
-const AuthenticatedRouteRoute = AuthenticatedRouteImport.update({
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthenticatedVirtualTableRoute = AuthenticatedVirtualTableImport.update({
-  id: '/virtual-table',
-  path: '/virtual-table',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-
-const AuthenticatedRequestUsageRoute = AuthenticatedRequestUsageImport.update({
-  id: '/request-usage',
-  path: '/request-usage',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-
-const AuthenticatedDashboardRoute = AuthenticatedDashboardImport.update({
+const AuthenticatedVirtualTableRoute =
+  AuthenticatedVirtualTableRouteImport.update({
+    id: '/virtual-table',
+    path: '/virtual-table',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedRequestUsageRoute =
+  AuthenticatedRequestUsageRouteImport.update({
+    id: '/request-usage',
+    path: '/request-usage',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-
-const AuthenticatedCalendarRoute = AuthenticatedCalendarImport.update({
+const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-
-const AuthenticatedJobsRouteRoute = AuthenticatedJobsRouteImport.update({
+const AuthenticatedJobsRouteRoute = AuthenticatedJobsRouteRouteImport.update({
   id: '/jobs',
   path: '/jobs',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-
-const AuthenticatedFlowsRouteRoute = AuthenticatedFlowsRouteImport.update({
+const AuthenticatedFlowsRouteRoute = AuthenticatedFlowsRouteRouteImport.update({
   id: '/flows',
   path: '/flows',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-
-const AuthenticatedSettingsIndexRoute = AuthenticatedSettingsIndexImport.update(
-  {
+const AuthenticatedSettingsIndexRoute =
+  AuthenticatedSettingsIndexRouteImport.update({
     id: '/settings/',
     path: '/settings/',
     getParentRoute: () => AuthenticatedRouteRoute,
-  } as any,
-)
-
-const AuthenticatedJobsIndexRoute = AuthenticatedJobsIndexImport.update({
+  } as any)
+const AuthenticatedJobsIndexRoute = AuthenticatedJobsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedJobsRouteRoute,
 } as any)
-
-const AuthenticatedSettingsUserRoute = AuthenticatedSettingsUserImport.update({
-  id: '/settings/user',
-  path: '/settings/user',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-
-const AuthenticatedJobsProcessIdRoute = AuthenticatedJobsProcessIdImport.update(
-  {
+const AuthenticatedSettingsUserRoute =
+  AuthenticatedSettingsUserRouteImport.update({
+    id: '/settings/user',
+    path: '/settings/user',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedJobsProcessIdRoute =
+  AuthenticatedJobsProcessIdRouteImport.update({
     id: '/$processId',
     path: '/$processId',
     getParentRoute: () => AuthenticatedJobsRouteRoute,
-  } as any,
-)
+  } as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/flows': typeof AuthenticatedFlowsRouteRoute
+  '/jobs': typeof AuthenticatedJobsRouteRouteWithChildren
+  '/calendar': typeof AuthenticatedCalendarRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/request-usage': typeof AuthenticatedRequestUsageRoute
+  '/virtual-table': typeof AuthenticatedVirtualTableRoute
+  '/jobs/$processId': typeof AuthenticatedJobsProcessIdRoute
+  '/settings/user': typeof AuthenticatedSettingsUserRoute
+  '/jobs/': typeof AuthenticatedJobsIndexRoute
+  '/settings': typeof AuthenticatedSettingsIndexRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/flows': typeof AuthenticatedFlowsRouteRoute
+  '/calendar': typeof AuthenticatedCalendarRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/request-usage': typeof AuthenticatedRequestUsageRoute
+  '/virtual-table': typeof AuthenticatedVirtualTableRoute
+  '/jobs/$processId': typeof AuthenticatedJobsProcessIdRoute
+  '/settings/user': typeof AuthenticatedSettingsUserRoute
+  '/jobs': typeof AuthenticatedJobsIndexRoute
+  '/settings': typeof AuthenticatedSettingsIndexRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/_authenticated/flows': typeof AuthenticatedFlowsRouteRoute
+  '/_authenticated/jobs': typeof AuthenticatedJobsRouteRouteWithChildren
+  '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/request-usage': typeof AuthenticatedRequestUsageRoute
+  '/_authenticated/virtual-table': typeof AuthenticatedVirtualTableRoute
+  '/_authenticated/jobs/$processId': typeof AuthenticatedJobsProcessIdRoute
+  '/_authenticated/settings/user': typeof AuthenticatedSettingsUserRoute
+  '/_authenticated/jobs/': typeof AuthenticatedJobsIndexRoute
+  '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/flows'
+    | '/jobs'
+    | '/calendar'
+    | '/dashboard'
+    | '/request-usage'
+    | '/virtual-table'
+    | '/jobs/$processId'
+    | '/settings/user'
+    | '/jobs/'
+    | '/settings'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/flows'
+    | '/calendar'
+    | '/dashboard'
+    | '/request-usage'
+    | '/virtual-table'
+    | '/jobs/$processId'
+    | '/settings/user'
+    | '/jobs'
+    | '/settings'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/_authenticated/flows'
+    | '/_authenticated/jobs'
+    | '/_authenticated/calendar'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/request-usage'
+    | '/_authenticated/virtual-table'
+    | '/_authenticated/jobs/$processId'
+    | '/_authenticated/settings/user'
+    | '/_authenticated/jobs/'
+    | '/_authenticated/settings/'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof AuthenticatedRouteImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/flows': {
-      id: '/_authenticated/flows'
-      path: '/flows'
-      fullPath: '/flows'
-      preLoaderRoute: typeof AuthenticatedFlowsRouteImport
-      parentRoute: typeof AuthenticatedRouteImport
-    }
-    '/_authenticated/jobs': {
-      id: '/_authenticated/jobs'
-      path: '/jobs'
-      fullPath: '/jobs'
-      preLoaderRoute: typeof AuthenticatedJobsRouteImport
-      parentRoute: typeof AuthenticatedRouteImport
-    }
-    '/_authenticated/calendar': {
-      id: '/_authenticated/calendar'
-      path: '/calendar'
-      fullPath: '/calendar'
-      preLoaderRoute: typeof AuthenticatedCalendarImport
-      parentRoute: typeof AuthenticatedRouteImport
-    }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardImport
-      parentRoute: typeof AuthenticatedRouteImport
-    }
-    '/_authenticated/request-usage': {
-      id: '/_authenticated/request-usage'
-      path: '/request-usage'
-      fullPath: '/request-usage'
-      preLoaderRoute: typeof AuthenticatedRequestUsageImport
-      parentRoute: typeof AuthenticatedRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/virtual-table': {
       id: '/_authenticated/virtual-table'
       path: '/virtual-table'
       fullPath: '/virtual-table'
-      preLoaderRoute: typeof AuthenticatedVirtualTableImport
-      parentRoute: typeof AuthenticatedRouteImport
+      preLoaderRoute: typeof AuthenticatedVirtualTableRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/jobs/$processId': {
-      id: '/_authenticated/jobs/$processId'
-      path: '/$processId'
-      fullPath: '/jobs/$processId'
-      preLoaderRoute: typeof AuthenticatedJobsProcessIdImport
-      parentRoute: typeof AuthenticatedJobsRouteImport
+    '/_authenticated/request-usage': {
+      id: '/_authenticated/request-usage'
+      path: '/request-usage'
+      fullPath: '/request-usage'
+      preLoaderRoute: typeof AuthenticatedRequestUsageRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/settings/user': {
-      id: '/_authenticated/settings/user'
-      path: '/settings/user'
-      fullPath: '/settings/user'
-      preLoaderRoute: typeof AuthenticatedSettingsUserImport
-      parentRoute: typeof AuthenticatedRouteImport
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/jobs/': {
-      id: '/_authenticated/jobs/'
-      path: '/'
-      fullPath: '/jobs/'
-      preLoaderRoute: typeof AuthenticatedJobsIndexImport
-      parentRoute: typeof AuthenticatedJobsRouteImport
+    '/_authenticated/calendar': {
+      id: '/_authenticated/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof AuthenticatedCalendarRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/jobs': {
+      id: '/_authenticated/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof AuthenticatedJobsRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/flows': {
+      id: '/_authenticated/flows'
+      path: '/flows'
+      fullPath: '/flows'
+      preLoaderRoute: typeof AuthenticatedFlowsRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings/': {
       id: '/_authenticated/settings/'
       path: '/settings'
       fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsIndexImport
-      parentRoute: typeof AuthenticatedRouteImport
+      preLoaderRoute: typeof AuthenticatedSettingsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/jobs/': {
+      id: '/_authenticated/jobs/'
+      path: '/'
+      fullPath: '/jobs/'
+      preLoaderRoute: typeof AuthenticatedJobsIndexRouteImport
+      parentRoute: typeof AuthenticatedJobsRouteRoute
+    }
+    '/_authenticated/settings/user': {
+      id: '/_authenticated/settings/user'
+      path: '/settings/user'
+      fullPath: '/settings/user'
+      preLoaderRoute: typeof AuthenticatedSettingsUserRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/jobs/$processId': {
+      id: '/_authenticated/jobs/$processId'
+      path: '/$processId'
+      fullPath: '/jobs/$processId'
+      preLoaderRoute: typeof AuthenticatedJobsProcessIdRouteImport
+      parentRoute: typeof AuthenticatedJobsRouteRoute
     }
   }
 }
-
-// Create and export the route tree
 
 interface AuthenticatedJobsRouteRouteChildren {
   AuthenticatedJobsProcessIdRoute: typeof AuthenticatedJobsProcessIdRoute
@@ -235,180 +304,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '': typeof AuthenticatedRouteRouteWithChildren
-  '/flows': typeof AuthenticatedFlowsRouteRoute
-  '/jobs': typeof AuthenticatedJobsRouteRouteWithChildren
-  '/calendar': typeof AuthenticatedCalendarRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
-  '/request-usage': typeof AuthenticatedRequestUsageRoute
-  '/virtual-table': typeof AuthenticatedVirtualTableRoute
-  '/jobs/$processId': typeof AuthenticatedJobsProcessIdRoute
-  '/settings/user': typeof AuthenticatedSettingsUserRoute
-  '/jobs/': typeof AuthenticatedJobsIndexRoute
-  '/settings': typeof AuthenticatedSettingsIndexRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '': typeof AuthenticatedRouteRouteWithChildren
-  '/flows': typeof AuthenticatedFlowsRouteRoute
-  '/calendar': typeof AuthenticatedCalendarRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
-  '/request-usage': typeof AuthenticatedRequestUsageRoute
-  '/virtual-table': typeof AuthenticatedVirtualTableRoute
-  '/jobs/$processId': typeof AuthenticatedJobsProcessIdRoute
-  '/settings/user': typeof AuthenticatedSettingsUserRoute
-  '/jobs': typeof AuthenticatedJobsIndexRoute
-  '/settings': typeof AuthenticatedSettingsIndexRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/_authenticated/flows': typeof AuthenticatedFlowsRouteRoute
-  '/_authenticated/jobs': typeof AuthenticatedJobsRouteRouteWithChildren
-  '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
-  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/request-usage': typeof AuthenticatedRequestUsageRoute
-  '/_authenticated/virtual-table': typeof AuthenticatedVirtualTableRoute
-  '/_authenticated/jobs/$processId': typeof AuthenticatedJobsProcessIdRoute
-  '/_authenticated/settings/user': typeof AuthenticatedSettingsUserRoute
-  '/_authenticated/jobs/': typeof AuthenticatedJobsIndexRoute
-  '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | ''
-    | '/flows'
-    | '/jobs'
-    | '/calendar'
-    | '/dashboard'
-    | '/request-usage'
-    | '/virtual-table'
-    | '/jobs/$processId'
-    | '/settings/user'
-    | '/jobs/'
-    | '/settings'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | ''
-    | '/flows'
-    | '/calendar'
-    | '/dashboard'
-    | '/request-usage'
-    | '/virtual-table'
-    | '/jobs/$processId'
-    | '/settings/user'
-    | '/jobs'
-    | '/settings'
-  id:
-    | '__root__'
-    | '/'
-    | '/_authenticated'
-    | '/_authenticated/flows'
-    | '/_authenticated/jobs'
-    | '/_authenticated/calendar'
-    | '/_authenticated/dashboard'
-    | '/_authenticated/request-usage'
-    | '/_authenticated/virtual-table'
-    | '/_authenticated/jobs/$processId'
-    | '/_authenticated/settings/user'
-    | '/_authenticated/jobs/'
-    | '/_authenticated/settings/'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-}
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/_authenticated"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/_authenticated": {
-      "filePath": "_authenticated/route.tsx",
-      "children": [
-        "/_authenticated/flows",
-        "/_authenticated/jobs",
-        "/_authenticated/calendar",
-        "/_authenticated/dashboard",
-        "/_authenticated/request-usage",
-        "/_authenticated/virtual-table",
-        "/_authenticated/settings/user",
-        "/_authenticated/settings/"
-      ]
-    },
-    "/_authenticated/flows": {
-      "filePath": "_authenticated/flows/route.tsx",
-      "parent": "/_authenticated"
-    },
-    "/_authenticated/jobs": {
-      "filePath": "_authenticated/jobs/route.tsx",
-      "parent": "/_authenticated",
-      "children": [
-        "/_authenticated/jobs/$processId",
-        "/_authenticated/jobs/"
-      ]
-    },
-    "/_authenticated/calendar": {
-      "filePath": "_authenticated/calendar.tsx",
-      "parent": "/_authenticated"
-    },
-    "/_authenticated/dashboard": {
-      "filePath": "_authenticated/dashboard.tsx",
-      "parent": "/_authenticated"
-    },
-    "/_authenticated/request-usage": {
-      "filePath": "_authenticated/request-usage.tsx",
-      "parent": "/_authenticated"
-    },
-    "/_authenticated/virtual-table": {
-      "filePath": "_authenticated/virtual-table.tsx",
-      "parent": "/_authenticated"
-    },
-    "/_authenticated/jobs/$processId": {
-      "filePath": "_authenticated/jobs/$processId.tsx",
-      "parent": "/_authenticated/jobs"
-    },
-    "/_authenticated/settings/user": {
-      "filePath": "_authenticated/settings/user.tsx",
-      "parent": "/_authenticated"
-    },
-    "/_authenticated/jobs/": {
-      "filePath": "_authenticated/jobs/index.tsx",
-      "parent": "/_authenticated/jobs"
-    },
-    "/_authenticated/settings/": {
-      "filePath": "_authenticated/settings/index.tsx",
-      "parent": "/_authenticated"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
