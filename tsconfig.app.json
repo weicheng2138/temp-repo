@@ -3,6 +3,7 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2024",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["vitest/globals", "@testing-library/jest-dom"],
     "useDefineForClassFields": true,
     "module": "ESNext",
     "skipLibCheck": true,
