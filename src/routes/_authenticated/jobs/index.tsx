@@ -78,38 +78,8 @@ const edgesTypes = {
 };
 
 const initialNodes: Node[] = [
-  // {
-  //   id: "a",
-  //   type: "output",
-  //   data: { value: 1, label: "one" },
-  //   position: { x: 100, y: 100 },
-  // },
-  // {
-  //   id: "b",
-  //   type: "num",
-  //   data: { value: 2, label: "two" },
-  //   position: { x: 300, y: 0 },
-  // },
-  // {
-  //   id: "c",
-  //   type: "sum",
-  //   data: { value: 3, label: "three" },
-  //   position: { x: 300, y: 100 },
-  // },
-  // {
-  //   id: "d",
-  //   type: "num",
-  //   data: { value: 4, label: "four" },
-  //   position: { x: 0, y: 400 },
-  // },
-  // {
-  //   id: "e",
-  //   type: "sum",
-  //   data: { value: 5, label: "five" },
-  //   position: { x: 600, y: 400 },
-  // },
   {
-    id: "input-id",
+    id: "0",
     type: NODE_TYPES_KV.INPUT_INFO,
     data: {
       value: 2,
@@ -121,7 +91,7 @@ const initialNodes: Node[] = [
     position: { x: 0, y: 0 },
   },
   {
-    id: "calculate-id1",
+    id: "1",
     type: NODE_TYPES_KV.CALCULATE,
     data: {
       value: 1,
@@ -133,7 +103,7 @@ const initialNodes: Node[] = [
     position: { x: 300, y: 0 },
   },
   {
-    id: "calculate-id2",
+    id: "2",
     type: NODE_TYPES_KV.CALCULATE,
     data: {
       value: 2,
@@ -149,8 +119,8 @@ const initialNodes: Node[] = [
 const initialEdges: Edge[] = [
   {
     id: "1->2",
-    source: "calculate-id1",
-    target: "calculate-id2",
+    source: "1",
+    target: "2",
   },
   // {
   //   id: "a->b",

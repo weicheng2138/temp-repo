@@ -47,6 +47,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-node-selected-ring: var(--node-selected-ring);
 }
 
 :root {
@@ -83,6 +84,7 @@
   --sidebar-border: oklch(0.928 0.006 264.531);
   --sidebar-ring: oklch(0.707 0.022 261.325);
   --editor-background: oklch(0.9488 0.0068 257.9);
+  --node-selected-ring: oklch(0.488 0.243 264.376);
 
   .react-flow {
     --xy-controls-button-background-color-default: var(--accent);
@@ -123,6 +125,7 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
   --editor-background: oklch(0.18 0.01 257.9);
+  --node-selected-ring: oklch(0.488 0.243 264.376);
 
   .react-flow {
     --xy-controls-button-background-color-default: var(--accent);

@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Calculator,
+  Copy,
   Info,
   Pencil,
   Rocket,
@@ -55,7 +56,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 
-export type CalculateData = Node<{
+export type CalculateNodeProps = Node<{
   value: number;
   label: string;
   jonbo: string;
@@ -68,13 +69,15 @@ export function CalculateNode({
   id,
   data,
   selected,
-}: NodeProps<CalculateData>) {
+}: NodeProps<CalculateNodeProps>) {
   const selectDataTypeId = useId();
   const outputNameId = useId();
   const { OUTPUT_DATA_TYPE_VALUES, OUTPUT_DATA_TYPE_KV } = OUTPUT_DATA_TYPE;
 
-  const { updateNodeData, setNodes, getNode } = useReactFlow<CalculateData>();
+  const { updateNodeData, setNodes, getNode, getNodes } =
+    useReactFlow<CalculateNodeProps>();
   const currentNode = getNode(id);
+  const nodes = getNodes();
 
   const handleDelete = useCallback(() => {
     setTimeout(() => {
@@ -88,6 +91,38 @@ export function CalculateNode({
     });
   };
 
+  const handleCreateACopy = () => {
+    if (!currentNode) {
+      return;
+    }
+    const newNodes: CalculateNodeProps[] = [];
+    const maxId = nodes.reduce((acc, node) => {
+      newNodes.push({
+        ...node,
+        selected: false,
+      });
+      const currentId = Number(node.id);
+      if (currentId > acc) {
+        acc = currentId;
+      }
+      return acc;
+    }, 0);
+
+    setTimeout(() => {
+      setNodes([
+        ...newNodes,
+        {
+          ...currentNode,
+          id: String(maxId + 1),
+          position: {
+            x: currentNode.position.x + 50,
+            y: currentNode.position.y + 50,
+          },
+        },
+      ]);
+    });
+  };
+
   return (
     <BaseNode selected={selected}>
       <NodeHeader>
@@ -97,10 +132,14 @@ export function CalculateNode({
         </NodeHeaderTitle>
         <NodeHeaderActions>
           <NodeHeaderEditCodeAction />
-          <NodeHeaderMenuAction label="Open node menu">
+          <NodeHeaderMenuAction label="Open calculate node menu">
             <DropdownMenuItem onSelect={handleDelete}>
               <Trash />
               Delete
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={handleCreateACopy}>
+              <Copy />
+              Create a copy
             </DropdownMenuItem>
           </NodeHeaderMenuAction>
           {/* <AddEditInputNodeDialog */}
