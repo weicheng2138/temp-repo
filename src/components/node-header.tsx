@@ -3,7 +3,7 @@ import { useNodeId, useReactFlow } from "@xyflow/react";
 import { Code, EllipsisVertical, Pencil, Trash } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Slot } from "@radix-ui/react-slot";
+import { Slot as SlotPrimitive } from "radix-ui";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -52,7 +52,7 @@ export const NodeHeaderTitle = ({
   asChild,
   ...props
 }: NodeHeaderTitleProps) => {
-  const Comp = asChild ? Slot : "h3";
+  const Comp = asChild ? SlotPrimitive.Slot : "h3";
 
   return (
     <Comp
